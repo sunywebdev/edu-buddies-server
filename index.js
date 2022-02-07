@@ -41,7 +41,7 @@ async function run() {
       res.send(allCoursesList);
     });
 
-    //end
+    //end of the code
   } finally {
   }
 }
