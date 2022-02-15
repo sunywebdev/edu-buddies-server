@@ -37,7 +37,7 @@ async function run() {
       res.json(result);
     });
 
-    // get all the course List
+    // get all the course List Here
 
     app.get("/courses", async (req, res) => {
       const coursesList = courses.find({});
