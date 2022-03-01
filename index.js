@@ -55,6 +55,7 @@ async function run() {
     const database = client.db("edubuddies");
     const courses = database.collection("courses");
     const userCollection = database.collection("users");
+    const teachersCollection = database.collection("teachers");
 
     // // post single Course
     // app.post("/courses", async (req, res) => {
@@ -113,6 +114,22 @@ async function run() {
       res.json(result);
     });
 
+    // insert Teacher Data
+    app.post("/addTeacher", async (req, res) => {
+      const teacher = req.body;
+      teacher.role = "teacher";
+      console.log(teacher);
+      const result = await teachersCollection.insertOne(teacher);
+      console.log(result);
+      res.json(result);
+    });
+
+    // get all teacher from teachers DB
+    app.get("/teachers", async (req, res) => {
+      const cursor = teachersCollection.find({});
+      const teachers = await cursor.toArray();
+      res.json(teachers);
+    });
     //Make Teacher
     app.put("/users/teacher", async (req, res) => {
       const user = req.body;
@@ -123,7 +140,7 @@ async function run() {
       res.json(result);
     });
 
-    // get all teacher list
+    // get all teacher list from user db  base on role
     app.get("/users/teachers", async (req, res) => {
       const cursor = userCollection.find({ role: "teacher" });
       const users = await cursor.toArray();
@@ -167,7 +184,14 @@ async function run() {
       const updateDoc = { $set: { data: fiterData.data } };
       const result = await courses.updateOne(filter, updateDoc);
       res.json(result);
-      console.log(fiterData);
+    });
+
+    // delete a course
+    app.delete("/deleteCourses/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await courses.deleteOne(query);
+      res.json(result);
     });
 
     // app.get("/oauth2callback", (req, res) => {
