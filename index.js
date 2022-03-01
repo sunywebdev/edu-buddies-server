@@ -56,12 +56,12 @@ async function run() {
     const courses = database.collection("courses");
     const userCollection = database.collection("users");
 
-    // post single Course
-    app.post("/courses", async (req, res) => {
-      const newItem = req.body;
-      const result = await courses.insertOne(newItem);
-      res.json(result);
-    });
+    // // post single Course
+    // app.post("/courses", async (req, res) => {
+    //   const newItem = req.body;
+    //   const result = await courses.insertOne(newItem);
+    //   res.json(result);
+    // });
 
     // get all the course List Here....
 
@@ -95,6 +95,7 @@ async function run() {
     //Upsert
     app.put("/users", async (req, res) => {
       const user = req.body;
+      user.role = "user";
       const filter = { email: user.email };
       const options = { upsert: true };
       const updateDoc = { $set: user };
@@ -112,6 +113,23 @@ async function run() {
       res.json(result);
     });
 
+    //Make Teacher
+    app.put("/users/teacher", async (req, res) => {
+      const user = req.body;
+      console.log("put", user);
+      const filter = { email: user.email };
+      const updateDoc = { $set: { role: "teacher" } };
+      const result = await userCollection.updateOne(filter, updateDoc);
+      res.json(result);
+    });
+
+    // get all teacher list
+    app.get("/users/teachers", async (req, res) => {
+      const cursor = userCollection.find({ role: "teacher" });
+      const users = await cursor.toArray();
+      res.json(users);
+    });
+
     //Admin Verfication
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
@@ -124,7 +142,7 @@ async function run() {
       res.json({ admin: isAdmin });
     });
 
-    // upload Youtube Vodeo
+    // Add a new courses
 
     app.post("/addCourse", async (req, res) => {
       console.log(req.body);
@@ -132,6 +150,8 @@ async function run() {
       const result = await courses.insertOne(newItem);
       res.json(result);
     });
+
+    // update video contents
 
     app.patch("/updateCourseContent/:id", async (req, res) => {
       const id = req.params.id;
@@ -141,6 +161,8 @@ async function run() {
 
       const fiterData = await courses.findOne(filter);
       const dataa = fiterData.data;
+      const arrayLength = dataa.length;
+      CourseData.milestone = `milestone ${arrayLength}`;
       fiterData.data.push(CourseData);
       const updateDoc = { $set: { data: fiterData.data } };
       const result = await courses.updateOne(filter, updateDoc);
