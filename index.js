@@ -211,6 +211,7 @@ async function run() {
 				$set: {
 					fullname: updatedReq.fullname,
 					phone: updatedReq.phone,
+					email: updatedReq.email,
 					about: updatedReq.about,
 					photoURL: updatedReq.photoURL,
 				},
