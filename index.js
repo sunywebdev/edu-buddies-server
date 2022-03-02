@@ -192,6 +192,7 @@ async function run() {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await courses.deleteOne(query);
+      console.log(result);
       res.json(result);
     });
 
@@ -332,28 +333,27 @@ async function run() {
 
     //// problem , need to fix/////
 
-    /* 	// To update single profile skillset data
-		app.put("/skillset", async (req, res) => {
-			const filter = { email: user?.email };
-			const updatedReq = req.body;
-			console.log("Comming form UI", updatedReq);
-			const options = { upsert: true };
-			const fiterData = await allUsersCollection.findOne(filter);
-			fiterData.skillset.push(updatedReq);
-			const updateFile = {
-				$set: {
-					skillset: fiterData.skillset,
-				},
-			};
-			const result = await allUsersCollection.updateOne(
-				filter,
-				updateFile,
-				options,
-			);
-			res.json(result);
-			console.log("Updated Successfully", result);
-		});
- */
+    // To update single profile skillset data
+    app.put("/skillset/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const updatedReq = req.body;
+      const options = { upsert: true };
+      const fiterData = await allUsersCollection.findOne(filter);
+      fiterData.skillset = updatedReq;
+      const updateFile = {
+        $set: {
+          skillset: fiterData.skillset,
+        },
+      };
+      const result = await allUsersCollection.updateOne(
+        filter,
+        updateFile,
+        options
+      );
+      res.json(result);
+    });
+
     //To load single profile data
     app.get("/allusers", async (req, res) => {
       const user = req.query;
