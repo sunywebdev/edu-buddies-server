@@ -48,19 +48,6 @@ const uploadVideoFile = multer({
   storage: storage,
 }).single("file");
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-let cron = require("node-cron");
-const nodemailer = require("nodemailer");
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "suny7610@gmail.com",
-    pass: "password5@",
-  },
-});
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
 async function run() {
   try {
     await client.connect();
@@ -70,6 +57,13 @@ async function run() {
     const userCollection = database.collection("users");
     const teachersCollection = database.collection("teachers");
     const allUsersCollection = database.collection("allUsers");
+
+    // // post single Course
+    // app.post("/courses", async (req, res) => {
+    //   const newItem = req.body;
+    //   const result = await courses.insertOne(newItem);
+    //   res.json(result);
+    // });
 
     // get all the course List Here....
 
@@ -148,14 +142,6 @@ async function run() {
       res.json(teachers);
     });
 
-<<<<<<< HEAD
-    // get Single Teacher Info From DB
-    app.get("/singleTeacher/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const TeacherData = await teachersCollection.findOne(query);
-      res.json(TeacherData);
-=======
     // DELETE Teacher from Teacher db
 
     app.delete("/deleteTeacher/:id", async (req, res) => {
@@ -164,7 +150,6 @@ async function run() {
       const result = await teachersCollection.deleteOne(query);
       console.log(result);
       res.json(result);
->>>>>>> af64e6ea77a65e0f11422cb7fd6b428e15dfda4f
     });
 
     //Make Teacher
@@ -232,19 +217,12 @@ async function run() {
       res.json(result);
     });
 
-    /// from Shoyeb Mohammed Suny ////
+    // from Suuny Bhai
 
     ////////////////////////////////////////////////
 
-    //to send message automatically
-    app.post("/autoEmail", async (req, res) => {
-      const incomming = req.body;
-      console.log(incomming);
-    });
-
     // To update single profile status data
     app.put("/profile", async (req, res) => {
-      const user = req.query;
       const filter = { email: user?.email };
       const updatedReq = req.body;
       console.log("Comming form UI", updatedReq);
@@ -253,7 +231,6 @@ async function run() {
         $set: {
           fullname: updatedReq.fullname,
           phone: updatedReq.phone,
-          email: updatedReq.email,
           about: updatedReq.about,
           photoURL: updatedReq.photoURL,
         },
@@ -269,7 +246,6 @@ async function run() {
 
     // To update single profile links data
     app.put("/importantlinks", async (req, res) => {
-      const user = req.query;
       const filter = { email: user?.email };
       const updatedReq = req.body;
       console.log("Comming form UI", updatedReq);
@@ -295,7 +271,6 @@ async function run() {
 
     // To update single profile education data
     app.put("/education", async (req, res) => {
-      const user = req.query;
       const filter = { email: user?.email };
       const updatedReq = req.body;
       console.log("Comming form UI", updatedReq);
@@ -323,7 +298,6 @@ async function run() {
 
     // To update single profile present address data
     app.put("/presentaddress", async (req, res) => {
-      const user = req.query;
       const filter = { email: user?.email };
       const updatedReq = req.body;
       console.log("Comming form UI", updatedReq);
@@ -352,7 +326,6 @@ async function run() {
 
     // To update single profile permanent address data
     app.put("/permanentaddress", async (req, res) => {
-      const user = req.query;
       const filter = { email: user?.email };
       const updatedReq = req.body;
       console.log("Comming form UI", updatedReq);
@@ -382,9 +355,9 @@ async function run() {
     //// problem , need to fix/////
 
     // To update single profile skillset data
-    app.put("/skillset", async (req, res) => {
-      const user = req.query;
-      const filter = { email: user?.email };
+    app.put("/skillset/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
       const updatedReq = req.body;
       const options = { upsert: true };
       const fiterData = await allUsersCollection.findOne(filter);
@@ -402,28 +375,6 @@ async function run() {
       res.json(result);
     });
 
-    // To update single profile skillset data
-    app.put("/skillsetDelete/:email/:skill", async (req, res) => {
-      const incoming = req.params;
-      console.log("email:", incoming?.email);
-      console.log("skill:", incoming?.skill);
-      const filter = { email: incoming?.email };
-      const fiterData = await allUsersCollection.findOne(filter);
-      const data = fiterData.skillset;
-      let filteredArray = data.filter(
-        (value) => value.skill !== incoming?.skill
-      );
-      console.log("filteredArray", filteredArray);
-
-      const updateFile = {
-        $set: {
-          skillset: filteredArray,
-        },
-      };
-      const result = await allUsersCollection.updateOne(filter, updateFile);
-      res.json(result);
-    });
-
     //To load single profile data
     app.get("/allusers", async (req, res) => {
       const user = req.query;
@@ -432,6 +383,7 @@ async function run() {
       res.send(result);
       console.log("Found one", result);
     });
+
     //end of the code
   } finally {
   }
