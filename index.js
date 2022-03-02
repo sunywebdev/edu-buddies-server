@@ -56,6 +56,7 @@ async function run() {
     const courses = database.collection("courses");
     const userCollection = database.collection("users");
     const teachersCollection = database.collection("teachers");
+    const allUsersCollection = database.collection("allUsers");
 
     // // post single Course
     // app.post("/courses", async (req, res) => {
@@ -194,45 +195,174 @@ async function run() {
       res.json(result);
     });
 
-    // app.get("/oauth2callback", (req, res) => {
-    //   res.redirect("http://localhost:3000/success");
-    //   const { filename, title, description } = JSON.parse(req.query.state);
-    //   console.log("filename", filename);
-    //   oauth.getToken(req.query.code, (err, tokens) => {
-    //     if (err) {
-    //       console.log(err);
-    //       return;
-    //     }
+    // from Suuny Bhai
 
-    //     oauth.setCredentials(tokens);
+    ////////////////////////////////////////////////
 
-    //     Youtube.videos.insert(
-    //       {
-    //         resource: {
-    //           // Video title and description
-    //           snippet: {
-    //             title,
-    //             description,
-    //           },
-    //           status: {
-    //             privacyStatus: "private",
-    //           },
-    //         },
-    //         // This is for the callback function
-    //         part: "snippet,status",
+    // To update single profile status data
+    app.put("/profile", async (req, res) => {
+      const filter = { email: user?.email };
+      const updatedReq = req.body;
+      console.log("Comming form UI", updatedReq);
+      const options = { upsert: true };
+      const updateFile = {
+        $set: {
+          fullname: updatedReq.fullname,
+          phone: updatedReq.phone,
+          about: updatedReq.about,
+          photoURL: updatedReq.photoURL,
+        },
+      };
+      const result = await allUsersCollection.updateOne(
+        filter,
+        updateFile,
+        options
+      );
+      res.json(result);
+      console.log("Updated Successfully", result);
+    });
 
-    //         media: {
-    //           body: fs.createReadStream(filename),
-    //         },
-    //       },
-    //       (err, data) => {
-    //         console.log("Done.", data);
-    //         res.json(data);
-    //         process.exit();
-    //       }
-    //     );
-    //   });
-    // });
+    // To update single profile links data
+    app.put("/importantlinks", async (req, res) => {
+      const filter = { email: user?.email };
+      const updatedReq = req.body;
+      console.log("Comming form UI", updatedReq);
+      const options = { upsert: true };
+      const updateFile = {
+        $set: {
+          importantlinks: {
+            cvLink: updatedReq.cvLink,
+            githubLink: updatedReq.githubLink,
+            portfolio: updatedReq.portfolio,
+            linkedinProfile: updatedReq.linkedinProfile,
+          },
+        },
+      };
+      const result = await allUsersCollection.updateOne(
+        filter,
+        updateFile,
+        options
+      );
+      res.json(result);
+      console.log("Updated Successfully", result);
+    });
+
+    // To update single profile education data
+    app.put("/education", async (req, res) => {
+      const filter = { email: user?.email };
+      const updatedReq = req.body;
+      console.log("Comming form UI", updatedReq);
+      const options = { upsert: true };
+      const updateFile = {
+        $set: {
+          educationalExp: {
+            educationalLevel: updatedReq.educationalLevel,
+            degree: updatedReq.degree,
+            instituteName: updatedReq.instituteName,
+            passingYear: updatedReq.passingYear,
+            currentYear: updatedReq.currentYear,
+            grade: updatedReq.grade,
+          },
+        },
+      };
+      const result = await allUsersCollection.updateOne(
+        filter,
+        updateFile,
+        options
+      );
+      res.json(result);
+      console.log("Updated Successfully", result);
+    });
+
+    // To update single profile present address data
+    app.put("/presentaddress", async (req, res) => {
+      const filter = { email: user?.email };
+      const updatedReq = req.body;
+      console.log("Comming form UI", updatedReq);
+      const options = { upsert: true };
+      const updateFile = {
+        $set: {
+          presentAddress: {
+            addressLine1: updatedReq.addressLine1,
+            addressLine2: updatedReq.addressLine2,
+            city: updatedReq.city,
+            state: updatedReq.state,
+            phone: updatedReq.phone,
+            zip: updatedReq.zip,
+            country: updatedReq.country,
+          },
+        },
+      };
+      const result = await allUsersCollection.updateOne(
+        filter,
+        updateFile,
+        options
+      );
+      res.json(result);
+      console.log("Updated Successfully", result);
+    });
+
+    // To update single profile permanent address data
+    app.put("/permanentaddress", async (req, res) => {
+      const filter = { email: user?.email };
+      const updatedReq = req.body;
+      console.log("Comming form UI", updatedReq);
+      const options = { upsert: true };
+      const updateFile = {
+        $set: {
+          permanentAddress: {
+            addressLine1: updatedReq.addressLine1,
+            addressLine2: updatedReq.addressLine2,
+            city: updatedReq.city,
+            state: updatedReq.state,
+            phone: updatedReq.phone,
+            zip: updatedReq.zip,
+            country: updatedReq.country,
+          },
+        },
+      };
+      const result = await allUsersCollection.updateOne(
+        filter,
+        updateFile,
+        options
+      );
+      res.json(result);
+      console.log("Updated Successfully", result);
+    });
+
+    //// problem , need to fix/////
+
+    /* 	// To update single profile skillset data
+		app.put("/skillset", async (req, res) => {
+			const filter = { email: user?.email };
+			const updatedReq = req.body;
+			console.log("Comming form UI", updatedReq);
+			const options = { upsert: true };
+			const fiterData = await allUsersCollection.findOne(filter);
+			fiterData.skillset.push(updatedReq);
+			const updateFile = {
+				$set: {
+					skillset: fiterData.skillset,
+				},
+			};
+			const result = await allUsersCollection.updateOne(
+				filter,
+				updateFile,
+				options,
+			);
+			res.json(result);
+			console.log("Updated Successfully", result);
+		});
+ */
+    //To load single profile data
+    app.get("/allusers", async (req, res) => {
+      const user = req.query;
+      console.log("user", user);
+      const result = await allUsersCollection.findOne({ email: user?.email });
+      res.send(result);
+      console.log("Found one", result);
+    });
+
     //end of the code
   } finally {
   }
