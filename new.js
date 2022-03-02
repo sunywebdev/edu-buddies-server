@@ -18,13 +18,6 @@ const credentials = require("./credentials.json");
 app.use(cors());
 app.use(express.json());
 
-const oauth = Youtube.authenticate({
-  type: "oauth",
-  client_id: credentials.web.client_id,
-  client_secret: credentials.web.client_secret,
-  redirect_url: credentials.web.redirect_uris[0],
-});
-
 const user = process.env.DB_USER;
 const password = process.env.DB_PASS;
 
@@ -35,19 +28,6 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
-const storage = multer.diskStorage({
-  destination: "./uploads",
-
-  filename(req, file, cb) {
-    const newFileName = `${file.originalname}`;
-    cb(null, newFileName);
-  },
-});
-
-const uploadVideoFile = multer({
-  storage: storage,
-}).single("file");
-
 async function run() {
   try {
     await client.connect();
@@ -57,13 +37,6 @@ async function run() {
     const userCollection = database.collection("users");
     const teachersCollection = database.collection("teachers");
     const allUsersCollection = database.collection("allUsers");
-
-    // // post single Course
-    // app.post("/courses", async (req, res) => {
-    //   const newItem = req.body;
-    //   const result = await courses.insertOne(newItem);
-    //   res.json(result);
-    // });
 
     // get all the course List Here....
 

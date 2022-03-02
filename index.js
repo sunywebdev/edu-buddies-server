@@ -239,6 +239,7 @@ async function run() {
       const filter = { email: user?.email };
       const updatedReq = req.body;
       console.log("Comming form UI", updatedReq);
+
       const options = { upsert: true };
       const updateFile = {
         $set: {
@@ -247,6 +248,7 @@ async function run() {
           email: updatedReq.email,
           about: updatedReq.about,
           photoURL: updatedReq.photoURL,
+          skillset: [],
         },
       };
       const result = await allUsersCollection.updateOne(
