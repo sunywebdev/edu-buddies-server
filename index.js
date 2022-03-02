@@ -247,6 +247,7 @@ async function run() {
 					email: updatedReq.email,
 					about: updatedReq.about,
 					photoURL: updatedReq.photoURL,
+					skillset: [],
 				},
 			};
 			const result = await allUsersCollection.updateOne(
@@ -369,8 +370,6 @@ async function run() {
 			res.json(result);
 			console.log("Updated Successfully", result);
 		});
-
-		//// problem , need to fix/////
 
 		// To update single profile skillset data
 		app.put("/skillset", async (req, res) => {
