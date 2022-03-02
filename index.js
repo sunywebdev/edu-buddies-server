@@ -48,6 +48,19 @@ const uploadVideoFile = multer({
 	storage: storage,
 }).single("file");
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+let cron = require("node-cron");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+	service: "gmail",
+	auth: {
+		user: "suny7610@gmail.com",
+		pass: "password5@",
+	},
+});
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 async function run() {
 	try {
 		await client.connect();
@@ -199,6 +212,12 @@ async function run() {
 		// from Suuny Bhai
 
 		////////////////////////////////////////////////
+
+		//to send message automatically
+		app.post("/autoEmail", async (req, res) => {
+			const incomming = req.body;
+			console.log(incomming);
+		});
 
 		// To update single profile status data
 		app.put("/profile", async (req, res) => {
