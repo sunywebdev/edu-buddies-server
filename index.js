@@ -148,23 +148,23 @@ async function run() {
       res.json(teachers);
     });
 
-<<<<<<< HEAD
     // get Single Teacher Info From DB
     app.get("/singleTeacher/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const TeacherData = await teachersCollection.findOne(query);
       res.json(TeacherData);
-=======
-    // DELETE Teacher from Teacher db
-
-    app.delete("/deleteTeacher/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const result = await teachersCollection.deleteOne(query);
-      console.log(result);
-      res.json(result);
->>>>>>> af64e6ea77a65e0f11422cb7fd6b428e15dfda4f
+    });
+    // get Best Perfomer from Teacher
+    app.get("/teachersDashboard/bestPerformer", async (req, res) => {
+      const bestPerformer = req.query;
+      console.log(bestPerformer);
+      const TeacherData = await teachersCollection
+        .find({
+          performer: bestPerformer.performer,
+        })
+        .toArray();
+      res.json(TeacherData);
     });
 
     //Make Teacher
