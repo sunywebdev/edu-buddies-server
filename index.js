@@ -131,6 +131,15 @@ async function run() {
       const teachers = await cursor.toArray();
       res.json(teachers);
     });
+
+    // get Single Teacher Info From DB
+    app.get("/singleTeacher/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const TeacherData = await teachersCollection.findOne(query);
+      res.json(TeacherData);
+    });
+
     //Make Teacher
     app.put("/users/teacher", async (req, res) => {
       const user = req.body;
