@@ -230,6 +230,31 @@ async function run() {
 			console.log("Updated Successfully", result);
 		});
 
+
+    //// problem , need to fix/////
+    
+	/* 	// To update single profile skillset data
+		app.put("/skillset", async (req, res) => {
+			const filter = { email: user?.email };
+			const updatedReq = req.body;
+			console.log("Comming form UI", updatedReq);
+			const options = { upsert: true };
+			const fiterData = await allUsersCollection.findOne(filter);
+			fiterData.skillset.push(updatedReq);
+			const updateFile = {
+				$set: {
+					skillset: fiterData.skillset,
+				},
+			};
+			const result = await allUsersCollection.updateOne(
+				filter,
+				updateFile,
+				options,
+			);
+			res.json(result);
+			console.log("Updated Successfully", result);
+		});
+ */
 		//To load single profile data
 		app.get("/allusers", async (req, res) => {
 			const user = req.query;
@@ -275,7 +300,6 @@ async function run() {
 			const CourseData = req.body;
 			const filter = { _id: ObjectId(id) };
 			const options = { upsert: true };
-
 			const fiterData = await courses.findOne(filter);
 			const dataa = fiterData.data;
 			fiterData.data.push(CourseData);
