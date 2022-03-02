@@ -100,7 +100,7 @@ async function run() {
 		});
 
 		// To update single profile status data
-		app.put("/allusers", async (req, res) => {
+		app.put("/profile", async (req, res) => {
 			const filter = { email: user?.email };
 			const updatedReq = req.body;
 			console.log("Comming form UI", updatedReq);
@@ -232,8 +232,9 @@ async function run() {
 
 		//To load single profile data
 		app.get("/allusers", async (req, res) => {
-			const filter = { email: user?.email };
-			const result = await allUsersCollection.findOne(filter);
+			const user = req.query;
+			console.log("user", user);
+			const result = await allUsersCollection.findOne({ email: user?.email });
 			res.send(result);
 			console.log("Found one", result);
 		});
