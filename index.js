@@ -58,13 +58,6 @@ async function run() {
     const teachersCollection = database.collection("teachers");
     const allUsersCollection = database.collection("allUsers");
 
-    // // post single Course
-    // app.post("/courses", async (req, res) => {
-    //   const newItem = req.body;
-    //   const result = await courses.insertOne(newItem);
-    //   res.json(result);
-    // });
-
     // get all the course List Here....
 
     app.get("/courses", async (req, res) => {
