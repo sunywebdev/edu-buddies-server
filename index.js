@@ -71,19 +71,22 @@ async function run() {
 		const teachersCollection = database.collection("teachers");
 		const allUsersCollection = database.collection("allUsers");
 
-		// // post single Course
-		// app.post("/courses", async (req, res) => {
-		//   const newItem = req.body;
-		//   const result = await courses.insertOne(newItem);
-		//   res.json(result);
-		// });
-
 		// get all the course List Here....
 
 		app.get("/courses", async (req, res) => {
 			const coursesList = courses.find({});
 			const allCoursesList = await coursesList.toArray();
 			res.send(allCoursesList);
+		});
+
+		// course update status
+		app.patch("/courses/:id", async (req, res) => {
+			const status = req.body;
+			const id = req.params.id;
+			const filter = { _id: ObjectId(id) };
+			const updateDoc = { $set: { courseStatus: status.statusName } };
+			const result = await courses.updateOne(filter, updateDoc);
+			res.json(result);
 		});
 
 		/*-------------------------------------------------------------------------------*\
@@ -144,6 +147,17 @@ async function run() {
 			const teachers = await cursor.toArray();
 			res.json(teachers);
 		});
+
+		// DELETE Teacher from Teacher db
+
+		app.delete("/deleteTeacher/:id", async (req, res) => {
+			const id = req.params.id;
+			const query = { _id: ObjectId(id) };
+			const result = await teachersCollection.deleteOne(query);
+			console.log(result);
+			res.json(result);
+		});
+
 		//Make Teacher
 		app.put("/users/teacher", async (req, res) => {
 			const user = req.body;
@@ -209,7 +223,7 @@ async function run() {
 			res.json(result);
 		});
 
-		// from Suuny Bhai
+		/// from Shoyeb Mohammed Suny ////
 
 		////////////////////////////////////////////////
 
@@ -409,7 +423,6 @@ async function run() {
 			res.send(result);
 			console.log("Found one", result);
 		});
-
 		//end of the code
 	} finally {
 	}
