@@ -229,27 +229,8 @@ async function run() {
 
 		//to send message automatically
 		app.post("/autoEmail", async (req, res) => {
-			let allUsers = await allUsersCollection.find().toArray();
-			console.log(allUsers);
-			const stdEmailList = allUsers?.map((user) => user?.email).join(",");
-			console.log(stdEmailList);
 			const incomming = req.body;
-			console.log("incomming", incomming);
-			const mailOptions = {
-				from: "",
-				to: stdEmailList,
-				cc: incomming?.cc,
-				bcc: incomming?.bcc,
-				subject: incomming?.subject,
-				text: incomming?.email,
-			};
-			transporter.sendMail(mailOptions, function (error, info) {
-				if (error) {
-					console.log(error);
-				} else {
-					console.log("Email sent: " + info.response);
-				}
-			});
+			console.log(incomming);
 		});
 
 		// To update single profile status data
