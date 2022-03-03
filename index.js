@@ -52,11 +52,14 @@ const uploadVideoFile = multer({
 let cron = require("node-cron");
 const nodemailer = require("nodemailer");
 
+const emailUser = process.env.EMAIL_USER;
+const emailPassword = process.env.EMAIL_PASS;
+
 const transporter = nodemailer.createTransport({
 	service: "gmail",
 	auth: {
-		user: "suny7610@gmail.com",
-		pass: "password5@",
+		user: emailUser,
+		pass: emailPassword,
 	},
 });
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,7 +129,7 @@ async function run() {
 			const user = req.body;
 			console.log("put", user);
 			const filter = { email: user.email };
-			const updateDoc = { $set: { role: "admin" } };
+			const updateDoc = { $set: { role: "Admin" } };
 			const result = await userCollection.updateOne(filter, updateDoc);
 			res.json(result);
 		});
@@ -134,7 +137,7 @@ async function run() {
 		// insert Teacher Data
 		app.post("/addTeacher", async (req, res) => {
 			const teacher = req.body;
-			teacher.role = "teacher";
+			teacher.role = "Teacher";
 			console.log(teacher);
 			const result = await teachersCollection.insertOne(teacher);
 			console.log(result);
@@ -163,14 +166,14 @@ async function run() {
 			const user = req.body;
 			console.log("put", user);
 			const filter = { email: user.email };
-			const updateDoc = { $set: { role: "teacher" } };
+			const updateDoc = { $set: { role: "Teacher" } };
 			const result = await userCollection.updateOne(filter, updateDoc);
 			res.json(result);
 		});
 
 		// get all teacher list from user db  base on role
 		app.get("/users/teachers", async (req, res) => {
-			const cursor = userCollection.find({ role: "teacher" });
+			const cursor = userCollection.find({ role: "Teacher" });
 			const users = await cursor.toArray();
 			res.json(users);
 		});
@@ -181,7 +184,7 @@ async function run() {
 			const query = { email: email };
 			const user = await userCollection.findOne(query);
 			let isAdmin = false;
-			if (user?.role === "admin") {
+			if (user?.role === "Admin") {
 				isAdmin = true;
 			}
 			res.json({ admin: isAdmin });
@@ -223,9 +226,42 @@ async function run() {
 			res.json(result);
 		});
 
+		///////////////////////////////////////////////////
+
 		/// from Shoyeb Mohammed Suny ////
 
 		////////////////////////////////////////////////
+
+		//To add new user when login or signup
+		app.post("/signup", async (req, res) => {
+			const newuser = req.body;
+			console.log("Request from UI ", newuser);
+			const result = await allUsersCollection.insertOne(newuser);
+			console.log("Successfully Added New User ", result);
+			res.json(result);
+		});
+		//To update or replace users data when login or signup
+		app.put("/login", async (req, res) => {
+			console.log(req.body);
+			const user = req.body;
+			const filter = { email: user?.email };
+			console.log("Request to replace or add user", user);
+			const options = { upsert: true };
+			const updateuser = {
+				$set: {
+					email: user?.email,
+					displayName: user?.displayName,
+					photoURL: user?.photoURL,
+				},
+			};
+			const result = await allUsersCollection.updateOne(
+				filter,
+				updateuser,
+				options,
+			);
+			res.json(result);
+			console.log("Successfully replaced or added user", result);
+		});
 
 		//to send message automatically
 		app.post("/autoEmail", async (req, res) => {
@@ -241,7 +277,7 @@ async function run() {
 				cc: incomming?.cc,
 				bcc: incomming?.bcc,
 				subject: incomming?.subject,
-				text: incomming?.email,
+				html: incomming?.email,
 			};
 			transporter.sendMail(mailOptions, function (error, info) {
 				if (error) {
@@ -260,7 +296,7 @@ async function run() {
 			console.log("Comming form UI", updatedReq);
 			const options = { upsert: true };
 			const fiterData = await allUsersCollection.findOne(filter);
-			const data = fiterData.skillset;
+			const data = fiterData?.skillset;
 			const updateFile = {
 				$set: {
 					fullname: updatedReq.fullname,
