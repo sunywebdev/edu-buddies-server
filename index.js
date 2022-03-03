@@ -272,7 +272,7 @@ async function run() {
 			const incomming = req.body;
 			console.log("incomming", incomming);
 			const mailOptions = {
-				from: "",
+				from: "EDU-BUDDIES <suny7610@gmail.com>",
 				to: stdEmailList,
 				cc: incomming?.cc,
 				bcc: incomming?.bcc,
@@ -282,8 +282,10 @@ async function run() {
 			transporter.sendMail(mailOptions, function (error, info) {
 				if (error) {
 					console.log(error);
+					res.json(error);
 				} else {
 					console.log("Email sent: " + info.response);
+					res.json(info);
 				}
 			});
 		});
