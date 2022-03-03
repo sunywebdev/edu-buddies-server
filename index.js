@@ -144,6 +144,7 @@ async function run() {
       res.json(result);
     });
 
+<<<<<<< HEAD
     // get all teacher from teachers DB
     app.get("/teachers", async (req, res) => {
       const cursor = teachersCollection.find({});
@@ -159,6 +160,35 @@ async function run() {
       const result = await teachersCollection.deleteOne(query);
       console.log(result);
       res.json(result);
+=======
+    //<---------------- Md Ashraful Islam ------------------>
+
+    // get Single Teacher Info From DB
+    app.get("/singleTeacher/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const TeacherData = await teachersCollection.findOne(query);
+      res.json(TeacherData);
+    });
+
+    // get My Course Info From DB
+    app.get("/CourseDetails/:courseId", async (req, res) => {
+      const id = req.params.courseId;
+      const query = { _id: ObjectId(id) };
+      const CourseData = await courses.findOne(query);
+      res.json(CourseData);
+    });
+
+    // get Best Perfomer from Teacher
+    app.get("/teachersDashboard/bestPerformer", async (req, res) => {
+      const bestPerformer = req.query;
+      const TeacherData = await teachersCollection
+        .find({
+          performer: bestPerformer.performer,
+        })
+        .toArray();
+      res.json(TeacherData);
+>>>>>>> 63323718eae4f3f0bd1aad0aacd2af5180d8f242
     });
 
     //Make Teacher
@@ -178,6 +208,7 @@ async function run() {
       res.json(users);
     });
 
+<<<<<<< HEAD
     // update teacher status
     app.patch("/teacherStatus/:id", async (req, res) => {
       const status = req.body;
@@ -194,6 +225,8 @@ async function run() {
       res.json(result);
     });
 
+=======
+>>>>>>> 63323718eae4f3f0bd1aad0aacd2af5180d8f242
     //Admin Verfication
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
@@ -242,6 +275,7 @@ async function run() {
       res.json(result);
     });
 
+<<<<<<< HEAD
     // get course using email
     app.get("/getCourse/:email", async (req, res) => {
       const email = req.params.email;
@@ -250,6 +284,8 @@ async function run() {
       res.json(users);
     });
 
+=======
+>>>>>>> 63323718eae4f3f0bd1aad0aacd2af5180d8f242
     ///////////////////////////////////////////////////
 
     /// from Shoyeb Mohammed Suny ////
@@ -505,7 +541,10 @@ async function run() {
       res.send(result);
       console.log("Found one", result);
     });
+<<<<<<< HEAD
 
+=======
+>>>>>>> 63323718eae4f3f0bd1aad0aacd2af5180d8f242
     //end of the code
   } finally {
   }
