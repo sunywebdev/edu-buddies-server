@@ -155,10 +155,18 @@ async function run() {
       const TeacherData = await teachersCollection.findOne(query);
       res.json(TeacherData);
     });
+
+    // get My Course Info From DB
+    app.get("/CourseDetails/:courseId", async (req, res) => {
+      const id = req.params.courseId;
+      const query = { _id: ObjectId(id) };
+      const CourseData = await courses.findOne(query);
+      res.json(CourseData);
+    });
+
     // get Best Perfomer from Teacher
     app.get("/teachersDashboard/bestPerformer", async (req, res) => {
       const bestPerformer = req.query;
-      console.log(bestPerformer);
       const TeacherData = await teachersCollection
         .find({
           performer: bestPerformer.performer,
