@@ -73,6 +73,7 @@ async function run() {
 		const userCollection = database.collection("users");
 		const teachersCollection = database.collection("teachers");
 		const allUsersCollection = database.collection("allUsers");
+		const blogsCollection = database.collection("blogs");
 
 		// get all the course List Here....
 
@@ -231,6 +232,78 @@ async function run() {
 		/// from Shoyeb Mohammed Suny ////
 
 		////////////////////////////////////////////////
+
+		app.post("/blogs", async (req, res) => {
+			const newItem = req.body;
+			console.log("Request from UI ", newItem);
+			const result = await blogsCollection.insertOne(newItem);
+			console.log("Successfully Added New Blog ", result);
+			res.json(result);
+		});
+
+		//To Delete blog one by one
+		app.delete("/blogs/:id", async (req, res) => {
+			const id = req.params.id;
+			console.log("Request to delete ", id);
+			const deleteId = { _id: ObjectId(id) };
+			const result = await blogsCollection.deleteOne(deleteId);
+			res.send(result);
+			console.log("blog Successfully Deleted", result);
+		});
+
+		//To load blogs
+		app.get("/blogs", async (req, res) => {
+			const cursor = blogsCollection.find({});
+			const result = await cursor.toArray();
+			console.log("Found one", result);
+			res.json(result);
+		});
+
+		//To load single blog by id
+		app.get("/blogs/:id", async (req, res) => {
+			const id = req.params.id;
+			console.log("Request to find ", id);
+			const findId = { _id: ObjectId(id) };
+			const result = await blogsCollection.findOne(findId);
+			res.send(result);
+			console.log("Found one", result);
+		});
+
+		// To update single review data
+		app.put("/review/:id", async (req, res) => {
+			const id = req.params.id;
+			console.log("id", id);
+			const filter = { _id: ObjectId(id) };
+			const updatedReq = req.body;
+			console.log("updatedReq", updatedReq);
+			const options = { upsert: true };
+			const fiterData = await blogsCollection.findOne(filter);
+			console.log("fiterData", fiterData);
+			fiterData.reviews.push(updatedReq);
+			const updateFile = {
+				$set: {
+					reviews: fiterData.reviews,
+				},
+			};
+			const result = await blogsCollection.updateOne(
+				filter,
+				updateFile,
+				options,
+			);
+			res.json(result);
+		});
+
+		// To update blog status
+		app.put("/blogStatus/:id", async (req, res) => {
+			const id = req.params.id;
+			console.log("id", id);
+			const updatedReq = req.body;
+			console.log(updatedReq);
+			const filter = { _id: ObjectId(id) };
+			const updateDoc = { $set: { blogStatus: updatedReq.text } };
+			const result = await blogsCollection.updateOne(filter, updateDoc);
+			res.json(result);
+		});
 
 		//To add new user when login or signup
 		app.post("/signup", async (req, res) => {
