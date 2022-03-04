@@ -73,6 +73,8 @@ async function run() {
     const userCollection = database.collection("users");
     const teachersCollection = database.collection("teachers");
     const allUsersCollection = database.collection("allUsers");
+    const blogsCollection = database.collection("blogs");
+    const newsletterCollection = database.collection("newsletter");
 
     // get all the course List Here....
 
@@ -250,11 +252,176 @@ async function run() {
       res.json(users);
     });
 
+    //<---------------- Md Ashraful Islam ------------------>
+
+    // get Single Teacher Info From DB
+    app.get("/singleTeacher/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const TeacherData = await teachersCollection.findOne(query);
+      res.json(TeacherData);
+    });
+
+    // get My Course Info From DB
+    app.get("/CourseDetails/:courseId", async (req, res) => {
+      const id = req.params.courseId;
+      const query = { _id: ObjectId(id) };
+      const CourseData = await courses.findOne(query);
+      res.json(CourseData);
+    });
+
+    // get Best Perfomer from Teacher
+    app.get("/teachersDashboard/bestPerformer", async (req, res) => {
+      const bestPerformer = req.query;
+      const TeacherData = await teachersCollection
+        .find({
+          performer: bestPerformer.performer,
+        })
+        .toArray();
+      res.json(TeacherData);
+    });
+
     ///////////////////////////////////////////////////
 
     /// from Shoyeb Mohammed Suny ////
 
     ////////////////////////////////////////////////
+
+    ///post new blog
+    app.post("/blogs", async (req, res) => {
+      const newItem = req.body;
+      console.log("Request from UI ", newItem);
+      const result = await blogsCollection.insertOne(newItem);
+      console.log("Successfully Added New Blog ", result);
+      res.json(result);
+    });
+
+    ///post newsletter
+    app.post("/newsletter", async (req, res) => {
+      const newItem = req.body;
+      console.log("Request from UI ", newItem);
+      const result = await newsletterCollection.insertOne(newItem);
+      console.log("Successfully Added New newsletter ", result);
+      res.json(result);
+    });
+
+    //To Delete newsletter one by one
+    app.delete("/newsletter/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("Request to delete ", id);
+      const deleteId = { _id: ObjectId(id) };
+      const result = await newsletterCollection.deleteOne(deleteId);
+      res.send(result);
+      console.log("newsletter Successfully Deleted", result);
+    });
+
+    //To load newsletter
+    app.get("/newsletter", async (req, res) => {
+      const cursor = newsletterCollection.find({});
+      const result = await cursor.toArray();
+      console.log("Found one", result);
+      res.json(result);
+    });
+    // To update newsletter status
+    app.put("/newsletterStatus/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("id", id);
+      const updatedReq = req.body;
+      console.log(updatedReq);
+      const filter = { _id: ObjectId(id) };
+      const updateDoc = { $set: { status: updatedReq.text } };
+      const result = await newsletterCollection.updateOne(filter, updateDoc);
+      res.json(result);
+    });
+
+    //to send newsletter
+    app.post("/postnewsletter", async (req, res) => {
+      let allUsers = await newsletterCollection.find().toArray();
+      console.log(allUsers);
+      const stdEmailList = allUsers?.map((user) => user?.email).join(",");
+      console.log("stdEmailList", stdEmailList);
+      const incomming = req.body;
+      console.log("incomming", incomming);
+      const mailOptions = {
+        from: "EDU-BUDDIES NEWSLETTER <suny7610@gmail.com>",
+        to: stdEmailList,
+        subject: incomming?.subject,
+        html: incomming?.details,
+      };
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+          res.json(error);
+        } else {
+          console.log("Newsletter sent: " + info.response);
+          res.json(info);
+        }
+      });
+    });
+
+    //To Delete blog one by one
+    app.delete("/blogs/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("Request to delete ", id);
+      const deleteId = { _id: ObjectId(id) };
+      const result = await blogsCollection.deleteOne(deleteId);
+      res.send(result);
+      console.log("blog Successfully Deleted", result);
+    });
+
+    //To load blogs
+    app.get("/blogs", async (req, res) => {
+      const cursor = blogsCollection.find({});
+      const result = await cursor.toArray();
+      console.log("Found one", result);
+      res.json(result);
+    });
+
+    //To load single blog by id
+    app.get("/blogs/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("Request to find ", id);
+      const findId = { _id: ObjectId(id) };
+      const result = await blogsCollection.findOne(findId);
+      res.send(result);
+      console.log("Found one", result);
+    });
+
+    // To update single review data
+    app.put("/review/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("id", id);
+      const filter = { _id: ObjectId(id) };
+      const updatedReq = req.body;
+      console.log("updatedReq", updatedReq);
+      const options = { upsert: true };
+      const fiterData = await blogsCollection.findOne(filter);
+      console.log("fiterData", fiterData);
+      fiterData.reviews.push(updatedReq);
+      const updateFile = {
+        $set: {
+          reviews: fiterData.reviews,
+        },
+      };
+      const result = await blogsCollection.updateOne(
+        filter,
+        updateFile,
+        options
+      );
+      res.json(result);
+    });
+
+    // To update blog status
+    app.put("/blogStatus/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("id", id);
+      const updatedReq = req.body;
+      console.log(updatedReq);
+      const filter = { _id: ObjectId(id) };
+      const updateDoc = { $set: { blogStatus: updatedReq.text } };
+      const result = await blogsCollection.updateOne(filter, updateDoc);
+      res.json(result);
+    });
 
     //To add new user when login or signup
     app.post("/signup", async (req, res) => {
@@ -264,6 +431,7 @@ async function run() {
       console.log("Successfully Added New User ", result);
       res.json(result);
     });
+
     //To update or replace users data when login or signup
     app.put("/login", async (req, res) => {
       console.log(req.body);
@@ -296,7 +464,7 @@ async function run() {
       const incomming = req.body;
       console.log("incomming", incomming);
       const mailOptions = {
-        from: "",
+        from: "EDU-BUDDIES <suny7610@gmail.com>",
         to: stdEmailList,
         cc: incomming?.cc,
         bcc: incomming?.bcc,
@@ -306,8 +474,10 @@ async function run() {
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
           console.log(error);
+          res.json(error);
         } else {
           console.log("Email sent: " + info.response);
+          res.json(info);
         }
       });
     });
@@ -452,8 +622,6 @@ async function run() {
       console.log("Updated Successfully", result);
     });
 
-    //// problem , need to fix/////
-
     // To update single profile skillset data
     app.put("/skillset", async (req, res) => {
       const user = req.query;
@@ -505,35 +673,8 @@ async function run() {
       res.send(result);
       console.log("Found one", result);
     });
+    //end of the code by Shoyeb Mohammed Suny
 
-    //<---------------- Md Ashraful Islam ------------------>
-
-    // get Single Teacher Info From DB
-    app.get("/singleTeacher/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const TeacherData = await teachersCollection.findOne(query);
-      res.json(TeacherData);
-    });
-
-    // get My Course Info From DB
-    app.get("/CourseDetails/:courseId", async (req, res) => {
-      const id = req.params.courseId;
-      const query = { _id: ObjectId(id) };
-      const CourseData = await courses.findOne(query);
-      res.json(CourseData);
-    });
-
-    // get Best Perfomer from Teacher
-    app.get("/teachersDashboard/bestPerformer", async (req, res) => {
-      const bestPerformer = req.query;
-      const TeacherData = await teachersCollection
-        .find({
-          performer: bestPerformer.performer,
-        })
-        .toArray();
-      res.json(TeacherData);
-    });
     //end of the code
   } finally {
   }
