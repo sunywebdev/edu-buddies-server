@@ -180,6 +180,22 @@ async function run() {
 			res.json(users);
 		});
 
+		// update teacher status
+		app.patch("/teacherStatus/:id", async (req, res) => {
+			const status = req.body;
+			const id = req.params.id;
+			console.log(id, status);
+			const options = { upsert: true };
+			const filter = { _id: ObjectId(id) };
+			const updateDoc = { $set: { status: status.statusName } };
+			const result = await teachersCollection.updateOne(
+				filter,
+				updateDoc,
+				options,
+			);
+			res.json(result);
+		});
+
 		//Admin Verfication
 		app.get("/users/:email", async (req, res) => {
 			const email = req.params.email;
@@ -226,6 +242,43 @@ async function run() {
 			const result = await courses.deleteOne(query);
 			console.log(result);
 			res.json(result);
+		});
+
+		// get course using email
+		app.get("/getCourse/:email", async (req, res) => {
+			const email = req.params.email;
+			const cursor = courses.find({ "owner.email": email });
+			const users = await cursor.toArray();
+			res.json(users);
+		});
+
+		//<---------------- Md Ashraful Islam ------------------>
+
+		// get Single Teacher Info From DB
+		app.get("/singleTeacher/:id", async (req, res) => {
+			const id = req.params.id;
+			const query = { _id: ObjectId(id) };
+			const TeacherData = await teachersCollection.findOne(query);
+			res.json(TeacherData);
+		});
+
+		// get My Course Info From DB
+		app.get("/CourseDetails/:courseId", async (req, res) => {
+			const id = req.params.courseId;
+			const query = { _id: ObjectId(id) };
+			const CourseData = await courses.findOne(query);
+			res.json(CourseData);
+		});
+
+		// get Best Perfomer from Teacher
+		app.get("/teachersDashboard/bestPerformer", async (req, res) => {
+			const bestPerformer = req.query;
+			const TeacherData = await teachersCollection
+				.find({
+					performer: bestPerformer.performer,
+				})
+				.toArray();
+			res.json(TeacherData);
 		});
 
 		///////////////////////////////////////////////////
@@ -569,7 +622,6 @@ async function run() {
 			console.log("Updated Successfully", result);
 		});
 
-
 		// To update single profile skillset data
 		app.put("/skillset", async (req, res) => {
 			const user = req.query;
@@ -622,6 +674,8 @@ async function run() {
 			console.log("Found one", result);
 		});
 		//end of the code by Shoyeb Mohammed Suny
+
+		//end of the code
 	} finally {
 	}
 }
