@@ -505,6 +505,35 @@ async function run() {
       res.send(result);
       console.log("Found one", result);
     });
+
+    //<---------------- Md Ashraful Islam ------------------>
+
+    // get Single Teacher Info From DB
+    app.get("/singleTeacher/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const TeacherData = await teachersCollection.findOne(query);
+      res.json(TeacherData);
+    });
+
+    // get My Course Info From DB
+    app.get("/CourseDetails/:courseId", async (req, res) => {
+      const id = req.params.courseId;
+      const query = { _id: ObjectId(id) };
+      const CourseData = await courses.findOne(query);
+      res.json(CourseData);
+    });
+
+    // get Best Perfomer from Teacher
+    app.get("/teachersDashboard/bestPerformer", async (req, res) => {
+      const bestPerformer = req.query;
+      const TeacherData = await teachersCollection
+        .find({
+          performer: bestPerformer.performer,
+        })
+        .toArray();
+      res.json(TeacherData);
+    });
     //end of the code
   } finally {
   }
