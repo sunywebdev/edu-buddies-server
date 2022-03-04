@@ -74,6 +74,7 @@ async function run() {
 		const teachersCollection = database.collection("teachers");
 		const allUsersCollection = database.collection("allUsers");
 		const blogsCollection = database.collection("blogs");
+		const newsletterCollection = database.collection("newsletter");
 
 		// get all the course List Here....
 
@@ -233,12 +234,76 @@ async function run() {
 
 		////////////////////////////////////////////////
 
+		///post new blog
 		app.post("/blogs", async (req, res) => {
 			const newItem = req.body;
 			console.log("Request from UI ", newItem);
 			const result = await blogsCollection.insertOne(newItem);
 			console.log("Successfully Added New Blog ", result);
 			res.json(result);
+		});
+
+		///post newsletter
+		app.post("/newsletter", async (req, res) => {
+			const newItem = req.body;
+			console.log("Request from UI ", newItem);
+			const result = await newsletterCollection.insertOne(newItem);
+			console.log("Successfully Added New newsletter ", result);
+			res.json(result);
+		});
+
+		//To Delete newsletter one by one
+		app.delete("/newsletter/:id", async (req, res) => {
+			const id = req.params.id;
+			console.log("Request to delete ", id);
+			const deleteId = { _id: ObjectId(id) };
+			const result = await newsletterCollection.deleteOne(deleteId);
+			res.send(result);
+			console.log("newsletter Successfully Deleted", result);
+		});
+
+		//To load newsletter
+		app.get("/newsletter", async (req, res) => {
+			const cursor = newsletterCollection.find({});
+			const result = await cursor.toArray();
+			console.log("Found one", result);
+			res.json(result);
+		});
+		// To update newsletter status
+		app.put("/newsletterStatus/:id", async (req, res) => {
+			const id = req.params.id;
+			console.log("id", id);
+			const updatedReq = req.body;
+			console.log(updatedReq);
+			const filter = { _id: ObjectId(id) };
+			const updateDoc = { $set: { status: updatedReq.text } };
+			const result = await newsletterCollection.updateOne(filter, updateDoc);
+			res.json(result);
+		});
+
+		//to send newsletter
+		app.post("/postnewsletter", async (req, res) => {
+			let allUsers = await newsletterCollection.find().toArray();
+			console.log(allUsers);
+			const stdEmailList = allUsers?.map((user) => user?.email).join(",");
+			console.log("stdEmailList", stdEmailList);
+			const incomming = req.body;
+			console.log("incomming", incomming);
+			const mailOptions = {
+				from: "EDU-BUDDIES NEWSLETTER <suny7610@gmail.com>",
+				to: stdEmailList,
+				subject: incomming?.subject,
+				html: incomming?.details,
+			};
+			transporter.sendMail(mailOptions, function (error, info) {
+				if (error) {
+					console.log(error);
+					res.json(error);
+				} else {
+					console.log("Newsletter sent: " + info.response);
+					res.json(info);
+				}
+			});
 		});
 
 		//To Delete blog one by one
@@ -313,6 +378,7 @@ async function run() {
 			console.log("Successfully Added New User ", result);
 			res.json(result);
 		});
+
 		//To update or replace users data when login or signup
 		app.put("/login", async (req, res) => {
 			console.log(req.body);
@@ -503,7 +569,6 @@ async function run() {
 			console.log("Updated Successfully", result);
 		});
 
-		//// problem , need to fix/////
 
 		// To update single profile skillset data
 		app.put("/skillset", async (req, res) => {
