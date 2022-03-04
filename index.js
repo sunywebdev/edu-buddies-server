@@ -505,10 +505,6 @@ async function run() {
       res.send(result);
       console.log("Found one", result);
     });
-<<<<<<< HEAD
-
-=======
->>>>>>> 63323718eae4f3f0bd1aad0aacd2af5180d8f242
     //end of the code
   } finally {
   }
