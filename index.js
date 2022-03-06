@@ -49,37 +49,7 @@ async function run() {
     const allUsersCollection = database.collection("allUsers");
     const blogsCollection = database.collection("blogs");
     const newsletterCollection = database.collection("newsletter");
-    const logCollection = database.collection("log");
-
-    const myFunc = async (req, res, next) => {
-      req.body.email
-        ? await logCollection.insertOne({
-            data: req.body,
-            ip: req.ip,
-            method: req.method,
-            url: req.originalUrl,
-            time: new Date(Date.now()).toLocaleString(),
-          })
-        : await logCollection.insertOne({
-            ip: req.ip,
-            method: req.method,
-            url: req.originalUrl,
-            time: new Date(Date.now()).toLocaleString(),
-          });
-      next();
-    };
-
-    app.use(myFunc);
-
-    app.get("/log", (req, res) => {
-      logger.log("info", [
-        { name: req.body.name, email: req.body.email },
-        { ip: req.ip },
-        { method: req.method },
-        { url: req.originalUrl },
-        { time: new Date() },
-      ]);
-    });
+    const promoCollection = database.collection("promo");
 
     // get all the course List Here....
 
@@ -227,16 +197,14 @@ async function run() {
     app.put("/updateCourseContent/:id", async (req, res) => {
       const id = req.params.id;
       const CourseData = req.body;
+      console.log(id);
+      console.log(CourseData);
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
-
       const fiterData = await courses.findOne(filter);
-      const dataa = fiterData.data;
-      const arrayLength = dataa.length;
-      CourseData.milestone = `Milestone ${arrayLength}`;
       fiterData.data.push(CourseData);
       const updateDoc = { $set: { data: fiterData.data } };
-      const result = await courses.updateOne(filter, updateDoc);
+      const result = await courses.updateOne(filter, updateDoc, options);
       res.json(result);
     });
 
@@ -292,6 +260,53 @@ async function run() {
 
     ////////////////////////////////////////////////
 
+    //Change role
+    app.put("/changerole", async (req, res) => {
+      const user = req.body;
+      console.log("user", user);
+      const filter = { email: user.email };
+      const updateDoc = { $set: { role: user.role } };
+      const result = await allUsersCollection.updateOne(filter, updateDoc);
+      res.json(result);
+    });
+
+    ///post new promo
+    app.post("/promo", async (req, res) => {
+      const newItem = req.body;
+      console.log("Request from UI ", newItem);
+      const result = await promoCollection.insertOne(newItem);
+      console.log("Successfully Added New promo ", result);
+      res.json(result);
+    });
+    //To load promo
+    app.get("/promo", async (req, res) => {
+      const cursor = promoCollection.find({});
+      const result = await cursor.toArray();
+      console.log("Found one", result);
+      res.json(result);
+    });
+
+    //To Delete promo one by one
+    app.delete("/promo/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("Request to delete ", id);
+      const deleteId = { _id: ObjectId(id) };
+      const result = await promoCollection.deleteOne(deleteId);
+      res.send(result);
+      console.log("promo code Successfully Deleted", result);
+    });
+    // To update promo status
+    app.put("/promo/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("id", id);
+      const updatedReq = req.body;
+      console.log(updatedReq);
+      const filter = { _id: ObjectId(id) };
+      const updateDoc = { $set: { status: updatedReq.text } };
+      const result = await promoCollection.updateOne(filter, updateDoc);
+      res.json(result);
+    });
+
     ///post new blog
     app.post("/blogs", async (req, res) => {
       const newItem = req.body;
@@ -327,6 +342,7 @@ async function run() {
       console.log("Found one", result);
       res.json(result);
     });
+
     // To update newsletter status
     app.put("/newsletterStatus/:id", async (req, res) => {
       const id = req.params.id;
@@ -678,6 +694,15 @@ async function run() {
       res.send(result);
       console.log("Found one", result);
     });
+
+    //To load all profile data
+    app.get("/allusersdata", async (req, res) => {
+      const cursor = allUsersCollection.find({});
+      const result = await cursor.toArray();
+      console.log("Found one", result);
+      res.json(result);
+    });
+
     //end of the code by Shoyeb Mohammed Suny
 
     //end of the code
