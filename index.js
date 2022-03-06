@@ -2,28 +2,15 @@ const express = require("express");
 const { MongoClient } = require("mongodb");
 const ObjectId = require("mongodb").ObjectId;
 require("dotenv").config();
-const path = require("path");
 const cors = require("cors");
-const Youtube = require("youtube-api");
-const uuid = require("uuid");
-const multer = require("multer");
-// const upload = multer({ dest: "./uploads" });
 const open = require("open");
 const fs = require("fs");
 const app = express();
 const port = process.env.PORT || 5000;
-
-const credentials = require("./credentials.json");
+const logger = require("./logger.js");
 
 app.use(cors());
 app.use(express.json());
-
-const oauth = Youtube.authenticate({
-  type: "oauth",
-  client_id: credentials.web.client_id,
-  client_secret: credentials.web.client_secret,
-  redirect_url: credentials.web.redirect_uris[0],
-});
 
 const user = process.env.DB_USER;
 const password = process.env.DB_PASS;
@@ -34,19 +21,6 @@ const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-
-const storage = multer.diskStorage({
-  destination: "./uploads",
-
-  filename(req, file, cb) {
-    const newFileName = `${file.originalname}`;
-    cb(null, newFileName);
-  },
-});
-
-const uploadVideoFile = multer({
-  storage: storage,
-}).single("file");
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 let cron = require("node-cron");
@@ -75,6 +49,37 @@ async function run() {
     const allUsersCollection = database.collection("allUsers");
     const blogsCollection = database.collection("blogs");
     const newsletterCollection = database.collection("newsletter");
+    const logCollection = database.collection("log");
+
+    const myFunc = async (req, res, next) => {
+      req.body.email
+        ? await logCollection.insertOne({
+            data: req.body,
+            ip: req.ip,
+            method: req.method,
+            url: req.originalUrl,
+            time: new Date(Date.now()).toLocaleString(),
+          })
+        : await logCollection.insertOne({
+            ip: req.ip,
+            method: req.method,
+            url: req.originalUrl,
+            time: new Date(Date.now()).toLocaleString(),
+          });
+      next();
+    };
+
+    app.use(myFunc);
+
+    app.get("/log", (req, res) => {
+      logger.log("info", [
+        { name: req.body.name, email: req.body.email },
+        { ip: req.ip },
+        { method: req.method },
+        { url: req.originalUrl },
+        { time: new Date() },
+      ]);
+    });
 
     // get all the course List Here....
 
@@ -219,7 +224,7 @@ async function run() {
 
     // update video contents
 
-    app.patch("/updateCourseContent/:id", async (req, res) => {
+    app.put("/updateCourseContent/:id", async (req, res) => {
       const id = req.params.id;
       const CourseData = req.body;
       const filter = { _id: ObjectId(id) };
@@ -228,7 +233,7 @@ async function run() {
       const fiterData = await courses.findOne(filter);
       const dataa = fiterData.data;
       const arrayLength = dataa.length;
-      CourseData.milestone = `milestone ${arrayLength}`;
+      CourseData.milestone = `Milestone ${arrayLength}`;
       fiterData.data.push(CourseData);
       const updateDoc = { $set: { data: fiterData.data } };
       const result = await courses.updateOne(filter, updateDoc);
