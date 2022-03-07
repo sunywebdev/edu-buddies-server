@@ -75,6 +75,7 @@ async function run() {
     const allUsersCollection = database.collection("allUsers");
     const blogsCollection = database.collection("blogs");
     const newsletterCollection = database.collection("newsletter");
+    const contactform = database.collection("contactform");
 
     // get all the course List Here....
 
@@ -125,6 +126,18 @@ async function run() {
       const result = await userCollection.updateOne(filter, updateDoc, options);
       res.json(result);
     });
+
+
+    // contactform
+    // app.post("/contactform", async (req, res) => {
+    //   const contactform = req.body;
+    //   contactform.role = "contactform";
+    //   console.log(contactform);
+    //   const result = await contactform.insertOne(contactform);
+    //   console.log(result);
+    //   res.json(result);
+    // });
+
 
     //Make Admin
     app.put("/users/admin", async (req, res) => {
