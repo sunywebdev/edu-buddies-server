@@ -50,10 +50,27 @@ async function run() {
     const blogsCollection = database.collection("blogs");
     const newsletterCollection = database.collection("newsletter");
     const promoCollection = database.collection("promo");
+    const logCollection = database.collection("log");
+
+    const logFunc = async (req, res, next) => {
+      const result = await logCollection.insertOne({
+        data: req.body,
+        ipAddress: req.ip,
+        method: req.method,
+        originalURL: req.originalUrl,
+        hostName: req.hostname,
+        host: req.host,
+        path: req.path,
+        params: req.params,
+        time: new Date().toLocaleString(Date.now()),
+      });
+
+      next();
+    };
 
     // get all the course List Here....
 
-    app.get("/courses", async (req, res) => {
+    app.get("/courses", logFunc, async (req, res, next) => {
       const coursesList = courses.find({});
       const allCoursesList = await coursesList.toArray();
       res.send(allCoursesList);
