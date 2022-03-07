@@ -8,9 +8,9 @@ require("./ashraful.js")(app);
 require("./nizam.js")(app);
 
 app.get("/", (req, res) => {
-	res.send("EDU BUDDIES is Running");
+  res.send("EDU BUDDIES is Running");
 });
 
 app.listen(port, () => {
-	console.log("EDU BUDDIES Server is running at port", port);
+  console.log("EDU BUDDIES Server is running at port", port);
 });
