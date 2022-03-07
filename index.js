@@ -1,7 +1,6 @@
 const express = require("express");
-const { MongoClient } = require("mongodb");
-const ObjectId = require("mongodb").ObjectId;
 require("dotenv").config();
+<<<<<<< HEAD
 const cors = require("cors");
 const open = require("open");
 const fs = require("fs");
@@ -727,6 +726,14 @@ async function run() {
   }
 }
 run().catch(console.dir);
+=======
+const app = express();
+const port = process.env.PORT || 5000;
+
+require("./suny.js")(app);
+require("./ashraful.js")(app);
+require("./nizam.js")(app);
+>>>>>>> 45234e7f3f7229f2692f3c22dff7a9d9f9eaecac
 
 app.get("/", (req, res) => {
   res.send("EDU BUDDIES is Running");
