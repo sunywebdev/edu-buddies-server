@@ -1,9 +1,21 @@
 module.exports = function (app) {
+  const {
+    initializeApp,
+    applicationDefault,
+    cert,
+  } = require("firebase-admin/app");
+  const {
+    getFirestore,
+    Timestamp,
+    FieldValue,
+    collection,
+  } = require("firebase-admin/firestore");
   const express = require("express");
   const { MongoClient } = require("mongodb");
   const ObjectId = require("mongodb").ObjectId;
   require("dotenv").config();
   const cors = require("cors");
+
   app.use(cors());
   app.use(express.json());
 
@@ -15,6 +27,12 @@ module.exports = function (app) {
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+  });
+
+  const serviceAccount = require("./edu.json");
+
+  initializeApp({
+    credential: cert(serviceAccount),
   });
 
   async function run() {
@@ -31,8 +49,16 @@ module.exports = function (app) {
       const promoCollection = database.collection("promo");
       const logCollection = database.collection("log");
 
+      const db = getFirestore();
+
+      const snapshot = await db.collection("history").get();
+      snapshot.forEach((doc) => {
+        console.log(doc.id, "=>", doc.data());
+      });
+
       const logFunc = async (req, res, next) => {
-        const result = await logCollection.insertOne({
+        const aTuringRef = db.collection("history").doc();
+        await aTuringRef.set({
           data: req.body,
           ipAddress: req.ip,
           method: req.method,
