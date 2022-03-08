@@ -190,6 +190,36 @@ module.exports = function (app) {
 				console.log("Found one", result);
 			});
 
+			//To load courses blog by id
+			app.get("/courses/:id", async (req, res) => {
+				const id = req.params.id;
+				console.log("Request to find ", id);
+				const findId = { _id: ObjectId(id) };
+				const result = await courses.findOne(findId);
+				res.send(result);
+				console.log("Found one", result);
+			});
+
+			// To update single course Review data
+			app.put("/courseReview/:id", async (req, res) => {
+				const id = req.params.id;
+				console.log("id", id);
+				const filter = { _id: ObjectId(id) };
+				const updatedReq = req.body;
+				console.log("updatedReq", updatedReq);
+				const options = { upsert: true };
+				const fiterData = await courses.findOne(filter);
+				console.log("fiterData", fiterData);
+				fiterData.reviews.push(updatedReq);
+				const updateFile = {
+					$set: {
+						reviews: fiterData.reviews,
+					},
+				};
+				const result = await courses.updateOne(filter, updateFile, options);
+				res.json(result);
+			});
+
 			// To update single review data
 			app.put("/review/:id", async (req, res) => {
 				const id = req.params.id;
