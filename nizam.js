@@ -6,6 +6,7 @@ module.exports = function (app) {
   } = require("firebase-admin/app");
   const {
     getFirestore,
+
     Timestamp,
     FieldValue,
     collection,
@@ -51,24 +52,38 @@ module.exports = function (app) {
 
       const db = getFirestore();
 
-      const snapshot = await db.collection("history").get();
-      snapshot.forEach((doc) => {
-        console.log(doc.id, "=>", doc.data());
-      });
+      // const snapshot = await db.collection("history").get();
+      // snapshot.forEach((doc) => {
+      //   console.log(doc.id, "=>", doc.data());
+      // });
+
+      const doc = db.collection("history").doc("history");
+
+      const observer = doc.onSnapshot(
+        (docSnapshot) => {
+          console.log(`Received doc snapshot: ${docSnapshot}`);
+          // ...
+        },
+        (err) => {
+          console.log(`Encountered error: ${err}`);
+        }
+      );
 
       const logFunc = async (req, res, next) => {
-        const aTuringRef = db.collection("history").doc();
-        await aTuringRef.set({
-          data: req.body,
-          ipAddress: req.ip,
-          method: req.method,
-          originalURL: req.originalUrl,
-          hostName: req.hostname,
-          host: req.host,
-          path: req.path,
-          params: req.params,
-          time: new Date().toLocaleString(Date.now()),
-        });
+        const ress = await db
+          .collection("history")
+          .doc()
+          .set({
+            data: req.body,
+            ipAddress: req.ip,
+            method: req.method,
+            originalURL: req.originalUrl,
+            hostName: req.hostname,
+
+            path: req.path,
+            params: req.params,
+            date: new Date().toLocaleString(Date.now()),
+          });
 
         next();
       };
