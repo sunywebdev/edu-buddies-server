@@ -80,7 +80,7 @@ module.exports = function (app) {
 				res.send(result);
 				console.log("supportsession code Successfully Deleted", result);
 			});
-			// To update supportsession join 
+			// To update supportsession join
 			app.put("/joinsupportsession/:id", async (req, res) => {
 				const id = req.params.id;
 				console.log("id", id);
@@ -102,6 +102,15 @@ module.exports = function (app) {
 					options,
 				);
 				res.json(result);
+			});
+			//To load supportsession by id
+			app.get("/singlesupportsession/:id", async (req, res) => {
+				const id = req.params.id;
+				console.log("Request to find ", id);
+				const findId = { _id: ObjectId(id) };
+				const result = await SupportSessionCollection.findOne(findId);
+				res.send(result);
+				console.log("Found one", result);
 			});
 			// To update supportsession status
 			app.put("/supportsession/:id", async (req, res) => {
