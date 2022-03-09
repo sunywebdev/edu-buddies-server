@@ -75,7 +75,7 @@ async function run() {
     const allUsersCollection = database.collection("allUsers");
     const blogsCollection = database.collection("blogs");
     const newsletterCollection = database.collection("newsletter");
-    const contactform = database.collection("contactform");
+    const contactformCollection = database.collection("contactform");
 
     // get all the course List Here....
 
@@ -128,15 +128,26 @@ async function run() {
     });
 
 
-    // contactform
-    // app.post("/contactform", async (req, res) => {
-    //   const contactform = req.body;
-    //   contactform.role = "contactform";
-    //   console.log(contactform);
-    //   const result = await contactform.insertOne(contactform);
-    //   console.log(result);
-    //   res.json(result);
-    // });
+
+
+        //  contactform get
+
+        app.get('/contactform', async (req, res) => {
+          const cursor = contactformCollection.find({});
+          const contactform = await cursor.toArray();
+          res.send(contactform);
+        });
+          
+
+    // contactform post
+    app.post("/contactform", async (req, res) => {
+      const contactform = req.body;
+    console.log('Hit the api', contactform);
+
+      const result = await contactformCollection.insertOne(contactform);
+      console.log(result);
+      res.json(result);
+    });
 
 
     //Make Admin
