@@ -69,6 +69,21 @@ module.exports = function (app) {
             options
           );
         };
+        // delete from admin databese
+        const deleteFromAdmin = async () => {
+          const result = await adminCollection.deleteOne(filter);
+          console.log(result);
+        };
+        // delete from Instrcutor databese
+        const deleteFromInstructor = async () => {
+          const result = await instructorCollection.deleteOne(filter);
+          console.log(result);
+        };
+        // delete from Student databese
+        const deleteFromStudent = async () => {
+          const result = await studentCollection.deleteOne(filter);
+          console.log(result);
+        };
 
         console.log("user", user);
         if (user.role === "Admin") {
@@ -78,6 +93,8 @@ module.exports = function (app) {
             options
           );
           univeresalRole();
+          deleteFromStudent();
+          deleteFromInstructor();
           res.json(result);
         } else if (user.role === "Instructor") {
           const result = await instructorCollection.updateOne(
@@ -85,7 +102,10 @@ module.exports = function (app) {
             updateData,
             options
           );
+
           univeresalRole();
+          deleteFromAdmin();
+          deleteFromStudent();
           res.json(result);
         } else if (user.role === "Student") {
           const result = await studentCollection.updateOne(
@@ -94,6 +114,8 @@ module.exports = function (app) {
             options
           );
           univeresalRole();
+          deleteFromAdmin();
+          deleteFromInstructor();
           res.json(result);
         } else {
           const result = await userCollection.updateOne(
@@ -101,6 +123,9 @@ module.exports = function (app) {
             updateData,
             options
           );
+          deleteFromAdmin();
+          deleteFromStudent();
+          deleteFromInstructor();
           res.json(result);
         }
       });
