@@ -41,6 +41,7 @@ module.exports = function (app) {
 			const blogsCollection = database.collection("blogs");
 			const newsletterCollection = database.collection("newsletter");
 			const promoCollection = database.collection("promo");
+			const SupportSessionCollection = database.collection("supportsession");
 
 			//Change role
 			app.put("/changerole", async (req, res) => {
@@ -51,6 +52,82 @@ module.exports = function (app) {
 				const result = await allUsersCollection.updateOne(filter, updateDoc);
 				res.json(result);
 			});
+
+			//////////////////////////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////////
+			///post new supportsession
+			app.post("/supportsession", async (req, res) => {
+				const newItem = req.body;
+				console.log("Request from UI ", newItem);
+				const result = await SupportSessionCollection.insertOne(newItem);
+				console.log("Successfully Added New supportsession ", result);
+				res.json(result);
+			});
+			//To load supportsession
+			app.get("/supportsession", async (req, res) => {
+				const cursor = SupportSessionCollection.find({});
+				const result = await cursor.toArray();
+				console.log("Found one", result);
+				res.json(result);
+			});
+
+			//To Delete supportsession one by one
+			app.delete("/supportsession/:id", async (req, res) => {
+				const id = req.params.id;
+				console.log("Request to delete ", id);
+				const deleteId = { _id: ObjectId(id) };
+				const result = await SupportSessionCollection.deleteOne(deleteId);
+				res.send(result);
+				console.log("supportsession code Successfully Deleted", result);
+			});
+			// To update supportsession join
+			app.put("/joinsupportsession/:id", async (req, res) => {
+				const id = req.params.id;
+				console.log("id", id);
+				const filter = { _id: ObjectId(id) };
+				const updatedReq = req.body;
+				console.log("updatedReq", updatedReq);
+				const options = { upsert: true };
+				const fiterData = await SupportSessionCollection.findOne(filter);
+				console.log("fiterData", fiterData);
+				fiterData.needSupport.push(updatedReq);
+				const updateFile = {
+					$set: {
+						needSupport: fiterData.needSupport,
+					},
+				};
+				const result = await SupportSessionCollection.updateOne(
+					filter,
+					updateFile,
+					options,
+				);
+				res.json(result);
+			});
+			//To load supportsession by id
+			app.get("/singlesupportsession/:id", async (req, res) => {
+				const id = req.params.id;
+				console.log("Request to find ", id);
+				const findId = { _id: ObjectId(id) };
+				const result = await SupportSessionCollection.findOne(findId);
+				res.send(result);
+				console.log("Found one", result);
+			});
+			// To update supportsession status
+			app.put("/supportsession/:id", async (req, res) => {
+				const id = req.params.id;
+				console.log("id", id);
+				const updatedReq = req.body;
+				console.log(updatedReq);
+				const filter = { _id: ObjectId(id) };
+				const updateDoc = { $set: { status: updatedReq.text } };
+				const result = await SupportSessionCollection.updateOne(
+					filter,
+					updateDoc,
+				);
+				res.json(result);
+			});
+			//////////////////////////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////////
 
 			///post new promo
 			app.post("/promo", async (req, res) => {
@@ -188,6 +265,36 @@ module.exports = function (app) {
 				const result = await blogsCollection.findOne(findId);
 				res.send(result);
 				console.log("Found one", result);
+			});
+
+			//To load courses blog by id
+			app.get("/courses/:id", async (req, res) => {
+				const id = req.params.id;
+				console.log("Request to find ", id);
+				const findId = { _id: ObjectId(id) };
+				const result = await courses.findOne(findId);
+				res.send(result);
+				console.log("Found one", result);
+			});
+
+			// To update single course Review data
+			app.put("/courseReview/:id", async (req, res) => {
+				const id = req.params.id;
+				console.log("id", id);
+				const filter = { _id: ObjectId(id) };
+				const updatedReq = req.body;
+				console.log("updatedReq", updatedReq);
+				const options = { upsert: true };
+				const fiterData = await courses.findOne(filter);
+				console.log("fiterData", fiterData);
+				fiterData.reviews.push(updatedReq);
+				const updateFile = {
+					$set: {
+						reviews: fiterData.reviews,
+					},
+				};
+				const result = await courses.updateOne(filter, updateFile, options);
+				res.json(result);
 			});
 
 			// To update single review data
