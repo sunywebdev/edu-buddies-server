@@ -61,6 +61,15 @@ module.exports = function (app) {
           },
         };
 
+        //   also change user role in user Table
+        const univeresalRole = async () => {
+          const result = await userCollection.updateOne(
+            filter,
+            updateData,
+            options
+          );
+        };
+
         console.log("user", user);
         if (user.role === "Admin") {
           const result = await adminCollection.updateOne(
@@ -68,6 +77,7 @@ module.exports = function (app) {
             updateData,
             options
           );
+          univeresalRole();
           res.json(result);
         } else if (user.role === "Instructor") {
           const result = await instructorCollection.updateOne(
@@ -75,6 +85,7 @@ module.exports = function (app) {
             updateData,
             options
           );
+          univeresalRole();
           res.json(result);
         } else if (user.role === "Student") {
           const result = await studentCollection.updateOne(
@@ -82,6 +93,7 @@ module.exports = function (app) {
             updateData,
             options
           );
+          univeresalRole();
           res.json(result);
         } else {
           const result = await userCollection.updateOne(
