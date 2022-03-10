@@ -70,19 +70,27 @@ module.exports = function (app) {
       );
 
       const logFunc = async (req, res, next) => {
+        let ipAdd;
+        if (req.ip.length > 3) {
+          ipAdd = req.ip.split("f:")[1];
+        } else {
+          ipAdd = req.ip;
+        }
         const ress = await db
           .collection("history")
           .doc()
           .set({
             data: req.body,
-            ipAddress: req.ip,
+            ipAddress: ipAdd,
             method: req.method,
             originalURL: req.originalUrl,
             hostName: req.hostname,
-
             path: req.path,
             params: req.params,
-            date: new Date().toLocaleString(Date.now()),
+            now: Date.now(),
+            timestamp: Timestamp.fromDate(new Date()),
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString(),
           });
 
         next();
