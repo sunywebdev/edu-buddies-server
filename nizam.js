@@ -70,6 +70,7 @@ module.exports = function (app) {
       );
 
       const logFunc = async (req, res, next) => {
+        console.log(req.message);
         let ipAdd;
         if (req.ip.length > 3) {
           ipAdd = req.ip.split("f:")[1];
@@ -98,6 +99,7 @@ module.exports = function (app) {
 
       // get all the course List Here....
       app.get("/courses", logFunc, async (req, res) => {
+        req.message = "Hello";
         const coursesList = courses.find({});
         const allCoursesList = await coursesList.toArray();
         res.send(allCoursesList);
