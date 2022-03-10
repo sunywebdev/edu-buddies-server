@@ -57,26 +57,27 @@ module.exports = function (app) {
             email: user.email,
             role: user.role,
             displayName: user.displayName,
-            photoURL: user.PhotoURl,
+            photoURL: user.photoURL,
           },
         };
 
         console.log("user", user);
         if (user.role === "Admin") {
-          const result = await adminCollection.insertOne(user);
+          const result = await adminCollection.updateOne(
+            filter,
+            updateData,
+            options
+          );
           res.json(result);
         } else if (user.role === "Instructor") {
           const result = await instructorCollection.insertOne(user);
           res.json(result);
         } else if (user.role === "Student") {
-          console.log("mee");
           const result = await studentCollection.updateOne(
             filter,
             updateData,
             options
           );
-          console.log(result);
-          //   const result = await studentCollection.insertOne(user);
           res.json(result);
         } else res.json("nothing found");
         // const filter = { email: user.email };
