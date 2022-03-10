@@ -126,7 +126,7 @@ module.exports = function (app) {
       });
 
       //Get Users API
-      app.get("/users", logFunc, async (req, res) => {
+      app.get("/users", async (req, res) => {
         const cursor = userCollection.find({});
         const users = await cursor.toArray();
         res.json(users);
