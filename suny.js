@@ -70,7 +70,11 @@ module.exports = function (app) {
           );
           res.json(result);
         } else if (user.role === "Instructor") {
-          const result = await instructorCollection.insertOne(user);
+          const result = await instructorCollection.updateOne(
+            filter,
+            updateData,
+            options
+          );
           res.json(result);
         } else if (user.role === "Student") {
           const result = await studentCollection.updateOne(
@@ -79,10 +83,7 @@ module.exports = function (app) {
             options
           );
           res.json(result);
-        } else res.json("nothing found");
-        // const filter = { email: user.email };
-        // const updateDoc = { $set: { role: user.role } };
-        // const result = await allUsersCollection.updateOne(filter, updateDoc);
+        }
       });
 
       //////////////////////////////////////////////////////////////////
