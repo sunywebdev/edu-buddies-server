@@ -98,7 +98,7 @@ module.exports = function (app) {
       };
 
       // get all the course List Here....
-      app.get("/courses", logFunc, async (req, res) => {
+      app.get("/courses", async (req, res) => {
         req.message = "Hello";
         const coursesList = courses.find({});
         const allCoursesList = await coursesList.toArray();
