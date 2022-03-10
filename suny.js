@@ -45,6 +45,7 @@ module.exports = function (app) {
 			const studentCollection = database.collection("student");
 			const instructorCollection = database.collection("instuctor");
 			const adminCollection = database.collection("admin");
+			const emailCollection = database.collection("email");
 
 			//Change role
 			app.put("/changerole", async (req, res) => {
@@ -128,6 +129,32 @@ module.exports = function (app) {
 					deleteFromInstructor();
 					res.json(result);
 				}
+			});
+
+			///post new email
+			app.post("/email", async (req, res) => {
+				const newItem = req.body;
+				console.log("Request from UI ", newItem);
+				const result = await emailCollection.insertOne(newItem);
+				console.log("Successfully Added New email ", result);
+				res.json(result);
+			});
+			//To load email
+			app.get("/email", async (req, res) => {
+				const cursor = emailCollection.find({});
+				const result = await cursor.toArray();
+				console.log("Found one", result);
+				res.json(result);
+			});
+
+			//To Delete email one by one
+			app.delete("/email/:id", async (req, res) => {
+				const id = req.params.id;
+				console.log("Request to delete ", id);
+				const deleteId = { _id: ObjectId(id) };
+				const result = await emailCollection.deleteOne(deleteId);
+				res.send(result);
+				console.log("email Successfully Deleted", result);
 			});
 
 			//////////////////////////////////////////////////////////////////
