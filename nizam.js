@@ -104,7 +104,7 @@ module.exports = function (app) {
       });
 
       // course update status
-      app.patch("/courses/:id", async (req, res) => {
+      app.patch("/courses/:id", logFunc, async (req, res) => {
         const status = req.body;
         const id = req.params.id;
         const filter = { _id: ObjectId(id) };
@@ -114,7 +114,7 @@ module.exports = function (app) {
       });
 
       //POST API For Users
-      app.post("/users", async (req, res) => {
+      app.post("/users", logFunc, async (req, res) => {
         const user = req.body;
         user.role = "user";
         console.log(user);
@@ -124,14 +124,14 @@ module.exports = function (app) {
       });
 
       //Get Users API
-      app.get("/users", async (req, res) => {
+      app.get("/users", logFunc, async (req, res) => {
         const cursor = userCollection.find({});
         const users = await cursor.toArray();
         res.json(users);
       });
 
       //Upsert
-      app.put("/users", async (req, res) => {
+      app.put("/users", logFunc, async (req, res) => {
         const user = req.body;
         user.role = "user";
         const filter = { email: user.email };
@@ -146,7 +146,7 @@ module.exports = function (app) {
       });
 
       //Make Admin
-      app.put("/users/admin", async (req, res) => {
+      app.put("/users/admin", logFunc, async (req, res) => {
         const user = req.body;
         console.log("put", user);
         const filter = { email: user.email };
@@ -156,7 +156,7 @@ module.exports = function (app) {
       });
 
       // insert Teacher Data
-      app.post("/addTeacher", async (req, res) => {
+      app.post("/addTeacher", logFunc, async (req, res) => {
         const teacher = req.body;
         teacher.role = "Teacher";
         console.log(teacher);
@@ -166,7 +166,7 @@ module.exports = function (app) {
       });
 
       // get all teacher from teachers DB
-      app.get("/teachers", async (req, res) => {
+      app.get("/teachers", logFunc, async (req, res) => {
         const cursor = teachersCollection.find({});
         const teachers = await cursor.toArray();
         res.json(teachers);
@@ -174,7 +174,7 @@ module.exports = function (app) {
 
       // DELETE Teacher from Teacher db
 
-      app.delete("/deleteTeacher/:id", async (req, res) => {
+      app.delete("/deleteTeacher/:id", logFunc, async (req, res) => {
         const id = req.params.id;
         const query = { _id: ObjectId(id) };
         const result = await teachersCollection.deleteOne(query);
@@ -183,7 +183,7 @@ module.exports = function (app) {
       });
 
       //Make Teacher
-      app.put("/users/teacher", async (req, res) => {
+      app.put("/users/teacher", logFunc, async (req, res) => {
         const user = req.body;
         console.log("put", user);
         const filter = { email: user.email };
@@ -193,14 +193,14 @@ module.exports = function (app) {
       });
 
       // get all teacher list from user db  base on role
-      app.get("/users/teachers", async (req, res) => {
+      app.get("/users/teachers", logFunc, async (req, res) => {
         const cursor = userCollection.find({ role: "Teacher" });
         const users = await cursor.toArray();
         res.json(users);
       });
 
       // update teacher status
-      app.patch("/teacherStatus/:id", async (req, res) => {
+      app.patch("/teacherStatus/:id", logFunc, async (req, res) => {
         const status = req.body;
         const id = req.params.id;
         console.log(id, status);
@@ -216,7 +216,7 @@ module.exports = function (app) {
       });
 
       //Admin Verfication
-      app.get("/users/:email", async (req, res) => {
+      app.get("/users/:email", logFunc, async (req, res) => {
         const email = req.params.email;
         const query = { email: email };
         const user = await userCollection.findOne(query);
@@ -229,7 +229,7 @@ module.exports = function (app) {
 
       // Add a new courses
 
-      app.post("/addCourse", async (req, res) => {
+      app.post("/addCourse", logFunc, async (req, res) => {
         console.log(req.body);
         const newItem = req.body;
         const result = await courses.insertOne(newItem);
@@ -238,7 +238,7 @@ module.exports = function (app) {
 
       // update video contents
 
-      app.put("/updateCourseContent/:id", async (req, res) => {
+      app.put("/updateCourseContent/:id", logFunc, async (req, res) => {
         const id = req.params.id;
         const CourseData = req.body;
         console.log(id);
@@ -253,7 +253,7 @@ module.exports = function (app) {
       });
 
       // delete a course
-      app.delete("/deleteCourses/:id", async (req, res) => {
+      app.delete("/deleteCourses/:id", logFunc, async (req, res) => {
         const id = req.params.id;
         const query = { _id: ObjectId(id) };
         const result = await courses.deleteOne(query);
@@ -262,7 +262,7 @@ module.exports = function (app) {
       });
 
       // get course using email
-      app.get("/getCourse/:email", async (req, res) => {
+      app.get("/getCourse/:email", logFunc, async (req, res) => {
         const email = req.params.email;
         const cursor = courses.find({ "owner.email": email });
         const users = await cursor.toArray();
