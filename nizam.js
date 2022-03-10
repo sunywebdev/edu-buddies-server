@@ -166,7 +166,7 @@ module.exports = function (app) {
       });
 
       // get all teacher from teachers DB
-      app.get("/teachers", logFunc, async (req, res) => {
+      app.get("/teachers", async (req, res) => {
         const cursor = teachersCollection.find({});
         const teachers = await cursor.toArray();
         res.json(teachers);
