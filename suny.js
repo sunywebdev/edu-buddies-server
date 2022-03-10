@@ -83,6 +83,13 @@ module.exports = function (app) {
             options
           );
           res.json(result);
+        } else {
+          const result = await userCollection.updateOne(
+            filter,
+            updateData,
+            options
+          );
+          res.json(result);
         }
       });
 
