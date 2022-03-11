@@ -135,6 +135,29 @@ module.exports = function (app) {
 			app.post("/email", async (req, res) => {
 				const newItem = req.body;
 				console.log("Request from UI ", newItem);
+				const email = newItem?.email;
+				const userName = newItem?.userName;
+				const message = newItem?.message;
+				const subject = newItem?.subject;
+				const mailOptions = {
+					from: "EDU-BUDDIES EMAIL <suny7610@gmail.com>",
+					to: "suny7610@gmail.com",
+					subject: newItem?.subject,
+					html: `
+					<h3>From : </h3><span>${email}</span>
+					<h3>Name : </h3><span>${userName}</span>
+					<h3>Subject : </h3><span>${subject}</span>
+					<h3>Message : </h3><span>${message}</span>`,
+				};
+				transporter.sendMail(mailOptions, function (error, info) {
+					if (error) {
+						console.log(error);
+						res.json(error);
+					} else {
+						console.log("Enail sent: " + info.response);
+						res.json(info);
+					}
+				});
 				const result = await emailCollection.insertOne(newItem);
 				console.log("Successfully Added New email ", result);
 				res.json(result);
