@@ -769,6 +769,15 @@ module.exports = function (app) {
 				console.log("Found one", result);
 				res.json(result);
 			});
+			//To Delete user one by one
+			app.delete("/allusersdata/:id", async (req, res) => {
+				const id = req.params.id;
+				console.log("Request to delete ", id);
+				const deleteId = { _id: ObjectId(id) };
+				const result = await allUsersCollection.deleteOne(deleteId);
+				res.send(result);
+				console.log("user Successfully Deleted", result);
+			});
 		} finally {
 		}
 	}
