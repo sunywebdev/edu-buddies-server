@@ -576,6 +576,28 @@ module.exports = function (app) {
 				console.log("Updated Successfully", result);
 			});
 
+			// To update single profile status data
+			app.put("/warning", async (req, res) => {
+				const user = req.query;
+				const filter = { email: user?.email };
+				const updatedReq = req.body;
+				console.log("Comming form UI", updatedReq);
+				const options = { upsert: true };
+				const updateFile = {
+					$set: {
+						skillset: updatedReq.skillset,
+						email: updatedReq.email,
+					},
+				};
+				const result = await allUsersCollection.updateOne(
+					filter,
+					updateFile,
+					options,
+				);
+				res.json(result);
+				console.log("Updated Successfully", result);
+			});
+
 			// To update single profile links data
 			app.put("/importantlinks", async (req, res) => {
 				const user = req.query;
