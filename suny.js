@@ -268,10 +268,8 @@ module.exports = function (app) {
 				console.log("data", data);
 				console.log("updatedReq?.email", updatedReq?.email);
 				console.log("updatedReq?.status", updatedReq?.status);
-				let filteredArray = data.find((std) => std.email !== updatedReq?.email);
-				console.log("filteredArray", filteredArray);
 				const replaced = data?.map((x) =>
-					x.email === updatedReq?.email ? updatedReq : x,
+					x.supportId === updatedReq?.supportId ? updatedReq : x,
 				);
 
 				console.log("replace", replaced);
