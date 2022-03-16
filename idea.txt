@@ -1,2 +1,6 @@
 add history
 add favorite 
+
+Add Amount
+Revinew
+Total Amount

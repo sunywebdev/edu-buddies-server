@@ -132,6 +132,14 @@ module.exports = function (app) {
         res.json(users);
       });
 
+      // get user role by email
+      app.get("/getUserRole", async (req, res) => {
+        const email = req.body.email;
+        const cursor = userCollection.find({ email: email });
+        const users = await cursor.toArray();
+        res.json(users);
+      });
+
       //Upsert
       app.put("/users", logFunc, async (req, res) => {
         const user = req.body;
