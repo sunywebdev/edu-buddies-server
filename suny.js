@@ -37,7 +37,6 @@ module.exports = function (app) {
 			const courses = database.collection("courses");
 			const userCollection = database.collection("users");
 			const teachersCollection = database.collection("teachers");
-			const allUsersCollection = database.collection("allUsers");
 			const blogsCollection = database.collection("blogs");
 			const newsletterCollection = database.collection("newsletter");
 			const promoCollection = database.collection("promo");
@@ -491,7 +490,7 @@ module.exports = function (app) {
 			app.post("/signup", async (req, res) => {
 				const newuser = req.body;
 				console.log("Request from UI ", newuser);
-				const result = await allUsersCollection.insertOne(newuser);
+				const result = await userCollection.insertOne(newuser);
 				console.log("Successfully Added New User ", result);
 				res.json(result);
 			});
@@ -510,7 +509,7 @@ module.exports = function (app) {
 						photoURL: user?.photoURL,
 					},
 				};
-				const result = await allUsersCollection.updateOne(
+				const result = await userCollection.updateOne(
 					filter,
 					updateuser,
 					options,
@@ -521,7 +520,7 @@ module.exports = function (app) {
 
 			//to send message automatically
 			app.post("/autoEmail", async (req, res) => {
-				let allUsers = await allUsersCollection.find().toArray();
+				let allUsers = await userCollection.find().toArray();
 				console.log(allUsers);
 				const stdEmailList = allUsers?.map((user) => user?.email).join(",");
 				console.log(stdEmailList);
@@ -553,7 +552,7 @@ module.exports = function (app) {
 				const updatedReq = req.body;
 				console.log("Comming form UI", updatedReq);
 				const options = { upsert: true };
-				const fiterData = await allUsersCollection.findOne(filter);
+				const fiterData = await userCollection.findOne(filter);
 				const data = fiterData?.skillset;
 				const updateFile = {
 					$set: {
@@ -565,7 +564,7 @@ module.exports = function (app) {
 						skillset: data,
 					},
 				};
-				const result = await allUsersCollection.updateOne(
+				const result = await userCollection.updateOne(
 					filter,
 					updateFile,
 					options,
@@ -587,7 +586,7 @@ module.exports = function (app) {
 						email: updatedReq.email,
 					},
 				};
-				const result = await allUsersCollection.updateOne(
+				const result = await userCollection.updateOne(
 					filter,
 					updateFile,
 					options,
@@ -613,7 +612,7 @@ module.exports = function (app) {
 						},
 					},
 				};
-				const result = await allUsersCollection.updateOne(
+				const result = await userCollection.updateOne(
 					filter,
 					updateFile,
 					options,
@@ -641,7 +640,7 @@ module.exports = function (app) {
 						},
 					},
 				};
-				const result = await allUsersCollection.updateOne(
+				const result = await userCollection.updateOne(
 					filter,
 					updateFile,
 					options,
@@ -670,7 +669,7 @@ module.exports = function (app) {
 						},
 					},
 				};
-				const result = await allUsersCollection.updateOne(
+				const result = await userCollection.updateOne(
 					filter,
 					updateFile,
 					options,
@@ -699,7 +698,7 @@ module.exports = function (app) {
 						},
 					},
 				};
-				const result = await allUsersCollection.updateOne(
+				const result = await userCollection.updateOne(
 					filter,
 					updateFile,
 					options,
@@ -714,14 +713,14 @@ module.exports = function (app) {
 				const filter = { email: user?.email };
 				const updatedReq = req.body;
 				const options = { upsert: true };
-				const fiterData = await allUsersCollection.findOne(filter);
+				const fiterData = await userCollection.findOne(filter);
 				fiterData.skillset.push(updatedReq);
 				const updateFile = {
 					$set: {
 						skillset: fiterData.skillset,
 					},
 				};
-				const result = await allUsersCollection.updateOne(
+				const result = await userCollection.updateOne(
 					filter,
 					updateFile,
 					options,
@@ -735,7 +734,7 @@ module.exports = function (app) {
 				console.log("email:", incoming?.email);
 				console.log("skill:", incoming?.skill);
 				const filter = { email: incoming?.email };
-				const fiterData = await allUsersCollection.findOne(filter);
+				const fiterData = await userCollection.findOne(filter);
 				const data = fiterData.skillset;
 				let filteredArray = data.filter(
 					(value) => value.skill !== incoming?.skill,
@@ -747,7 +746,7 @@ module.exports = function (app) {
 						skillset: filteredArray,
 					},
 				};
-				const result = await allUsersCollection.updateOne(filter, updateFile);
+				const result = await userCollection.updateOne(filter, updateFile);
 				res.json(result);
 			});
 
@@ -755,14 +754,14 @@ module.exports = function (app) {
 			app.get("/allusers", async (req, res) => {
 				const user = req.query;
 				console.log("user", user);
-				const result = await allUsersCollection.findOne({ email: user?.email });
+				const result = await userCollection.findOne({ email: user?.email });
 				res.send(result);
 				console.log("Found one", result);
 			});
 
 			//To load all profile data
 			app.get("/allusersdata", async (req, res) => {
-				const cursor = allUsersCollection.find({});
+				const cursor = userCollection.find({});
 				const result = await cursor.toArray();
 				console.log("Found one", result);
 				res.json(result);
@@ -772,7 +771,7 @@ module.exports = function (app) {
 				const id = req.params.id;
 				console.log("Request to delete ", id);
 				const deleteId = { _id: ObjectId(id) };
-				const result = await allUsersCollection.deleteOne(deleteId);
+				const result = await userCollection.deleteOne(deleteId);
 				res.send(result);
 				console.log("user Successfully Deleted", result);
 			});
