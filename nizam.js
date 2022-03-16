@@ -44,7 +44,6 @@ module.exports = function (app) {
       const courses = database.collection("courses");
       const userCollection = database.collection("users");
       const teachersCollection = database.collection("teachers");
-      const allUsersCollection = database.collection("allUsers");
       const blogsCollection = database.collection("blogs");
       const newsletterCollection = database.collection("newsletter");
       const promoCollection = database.collection("promo");
