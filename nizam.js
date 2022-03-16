@@ -133,8 +133,8 @@ module.exports = function (app) {
       });
 
       // get user role by email
-      app.get("/getUserRole", async (req, res) => {
-        const email = req.body.email;
+      app.get("/getUserRole/:email", async (req, res) => {
+        const email = req.params.email;
         const cursor = userCollection.find({ email: email });
         const users = await cursor.toArray();
         res.json(users);
