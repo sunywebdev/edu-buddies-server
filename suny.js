@@ -135,6 +135,29 @@ module.exports = function (app) {
 			app.post("/email", async (req, res) => {
 				const newItem = req.body;
 				console.log("Request from UI ", newItem);
+				const email = newItem?.email;
+				const userName = newItem?.userName;
+				const message = newItem?.message;
+				const subject = newItem?.subject;
+				const mailOptions = {
+					from: "EDU-BUDDIES EMAIL <suny7610@gmail.com>",
+					to: "suny7610@gmail.com",
+					subject: newItem?.subject,
+					html: `
+					<h3>From : </h3><span>${email}</span>
+					<h3>Name : </h3><span>${userName}</span>
+					<h3>Subject : </h3><span>${subject}</span>
+					<h3>Message : </h3><span>${message}</span>`,
+				};
+				transporter.sendMail(mailOptions, function (error, info) {
+					if (error) {
+						console.log(error);
+						res.json(error);
+					} else {
+						console.log("Enail sent: " + info.response);
+						res.json(info);
+					}
+				});
 				const result = await emailCollection.insertOne(newItem);
 				console.log("Successfully Added New email ", result);
 				res.json(result);
@@ -245,10 +268,8 @@ module.exports = function (app) {
 				console.log("data", data);
 				console.log("updatedReq?.email", updatedReq?.email);
 				console.log("updatedReq?.status", updatedReq?.status);
-				let filteredArray = data.find((std) => std.email !== updatedReq?.email);
-				console.log("filteredArray", filteredArray);
 				const replaced = data?.map((x) =>
-					x.email === updatedReq?.email ? updatedReq : x,
+					x.supportId === updatedReq?.supportId ? updatedReq : x,
 				);
 
 				console.log("replace", replaced);
@@ -553,6 +574,28 @@ module.exports = function (app) {
 				console.log("Updated Successfully", result);
 			});
 
+			// To update single profile status data
+			app.put("/warning", async (req, res) => {
+				const user = req.query;
+				const filter = { email: user?.email };
+				const updatedReq = req.body;
+				console.log("Comming form UI", updatedReq);
+				const options = { upsert: true };
+				const updateFile = {
+					$set: {
+						skillset: updatedReq.skillset,
+						email: updatedReq.email,
+					},
+				};
+				const result = await allUsersCollection.updateOne(
+					filter,
+					updateFile,
+					options,
+				);
+				res.json(result);
+				console.log("Updated Successfully", result);
+			});
+
 			// To update single profile links data
 			app.put("/importantlinks", async (req, res) => {
 				const user = req.query;
@@ -723,6 +766,15 @@ module.exports = function (app) {
 				const result = await cursor.toArray();
 				console.log("Found one", result);
 				res.json(result);
+			});
+			//To Delete user one by one
+			app.delete("/allusersdata/:id", async (req, res) => {
+				const id = req.params.id;
+				console.log("Request to delete ", id);
+				const deleteId = { _id: ObjectId(id) };
+				const result = await allUsersCollection.deleteOne(deleteId);
+				res.send(result);
+				console.log("user Successfully Deleted", result);
 			});
 		} finally {
 		}
