@@ -489,6 +489,7 @@ module.exports = function (app) {
 			//To add new user when login or signup
 			app.post("/signup", async (req, res) => {
 				const newuser = req.body;
+				newuser.role = "User";
 				console.log("Request from UI ", newuser);
 				const result = await userCollection.insertOne(newuser);
 				console.log("Successfully Added New User ", result);
