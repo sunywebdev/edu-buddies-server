@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "edubuddies-cf055",
+  "private_key_id": "b7cc6236e5a3c82e7b37c1e74bebf89c11da953c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDqHYVDhNn95AgU\n4tvuzeNcHm1qTYH6d86vE6aHQFy5Cs118M/q9x0Qon8A1GTkji6NVzgA3Za4wmG/\nDp/D5c9D666Nk2+5dDh0OvizyUDiI8ZDN/Mm7n4wgqDbTAwPo2H3cS3NUymwS82/\nCrIfyx5YhpIR8o+UgrlIJshVaPO3XorRIIjWe5FEvU/95A23CbIJ4RzRJ3QufIhy\nbGerezAQ/F8jUW1NSfzNi+tJlQjHoKhL7+0j2DBhWMfw7kTo7Hph7vB6Si44XXjB\npkYp/hB0ECXrt6WDWHSOaI9tZjwFWr+aeMN2ouDOYONRsJ3IGQQBmNCHnV+Xc9GW\nk0aZEpQtAgMBAAECggEAC2afoD+efAo4SIgZrMHzAf/rVSNsIn3mH0mGMQz11v8L\nLWSqQ2eAT1iSdcBiH207IB/wtr4TwnCY4Px91ETjOIwIJpXY+X+K5kIe7WZuFfUn\nCQv299ziYUtjOPq1ladftHSbBeY4YAD5BoYnUXwLQMVg5KXazyEkk7prxBkF0Vad\n9GWz0Cjpnl8y3rg5UrrwEW3vCvvooEfp/V+riuvOXETpNYYDI8EJ9HNLU/t2RH/Q\npWYwxOg7i/32PcCGmtDyadISpb71umCp+27lLfL3kzUW7dJ2WFvFaqn/iOUXryic\nfBmNKcOJR7h5FcskTJuDUTc5ztDAqodUbUblMYjH0wKBgQD4Atv27WGIoapOu0Ec\nCaYTQagtLpRR9Tq/HQXRnzsgXES4uYgnyzNpLyYTmqZfy7llVumhWnaZLluztTKQ\nQX/L/moru2gmpDYmQRLkw7ueMpVygp7aORPZ04GVcT35ATouOGKXX5PAIetgtrOn\nA2ckUaekvom7shkI20+gr/fv7wKBgQDxqBLmtPHx6fUGpCDBO3c1WkpN7p7gRfew\nH6UotcrtfTAsA2qlqYnoAPWurBn+xmUGI3DivWOjxkyXcdsKVZAd8ZO7GDEKo83G\nkBEQt7RER5o2r7FtGCAgIS5FHPRHAbJ2xozyWfscZtqYHwpuqriJma3zWi1j3QNG\ndPjFhSkhowKBgQCKt46wnjVfZo0LXFEejYcGXkLigpsS/EbPfjwy8wzvHKyTZbJy\nD4XB3008ydMk4Z3gwKwMQ7zyEKvZ6A9QAFKqlrJro3atpktjOiKHMbNO2JweYFDZ\nXfNscpCYNa6kB7uy/namlB7f6BjvD0GMuKqH9eP+kVQYV5UJDyGKjuHuoQKBgQCv\n4rj/GiwO+03P6527huCZAIKcflU8vzAsDJxVKRvuBvQM1N/Ge8NYDXrEC5dQDG5z\nLVB4d4gSJ76Pa9sVhnlCkhYIUu8+40Jeh3UkSdD28XaY3v+we6LGP+BBhXV2SRHv\nyUvFCSDv5xyrI8ygB7oQzL4DJVtsF+zOV0zJ1sW9KQKBgQClt51MrNuUrrf+MQdu\nSlh7K7IlNKpooZVS8YkAkB7zh9oSxvJO5UiqfoRr3iTkkjhNOIpYLHI9uZdJanM9\nmY8SUEAxRNrx1XINiaiufdPNPsZ1w62+caootv13TgWI34t7okSchLKJ0uCdlZJj\n8mmU7QOOCG23rmJfTAqGXY9tzw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-2hlk3@edubuddies-cf055.iam.gserviceaccount.com",
+  "client_id": "107044679812937755646",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-2hlk3%40edubuddies-cf055.iam.gserviceaccount.com"
+}

@@ -1,0 +1,9 @@
+add history
+add favorite 
+
+Add Amount
+Revinew
+Total Amount
+
+
+student ,teacher and admin set empty array
