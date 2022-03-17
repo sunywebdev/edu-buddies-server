@@ -61,11 +61,12 @@ module.exports = function (app) {
           .toArray();
         res.json(TeacherData);
       });
+
       // SSL Commerz All API Here
 
       // Initialize Payment
 
-      app.get("/init", async (req, res) => {
+      app.post("/init", async (req, res) => {
         const productInfo = {
           currency: "BDT",
           paymentStatus: "pending",
@@ -74,23 +75,23 @@ module.exports = function (app) {
           fail_url: "http://localhost:5000/failure",
           cancel_url: "http://localhost:5000/cancel",
           ipn_url: "http://localhost:5000/ipn",
-          product_name: "req.body.product_name",
+          product_name: req.body.product_name,
           product_category: req.body.product_category,
           product_profile: req.body.product_profile,
           product_image: req.body.product_image,
-          productDetails: req.body.productDetails,
-          total_amount: 500,
+          productDetails: req.body.product_profile,
+          total_amount: req.body.total_amount,
           instructor: req.body.instructor,
           cus_name: req.body.cus_name,
           cus_email: req.body.cus_email,
           cus_add1: req.body.cus_add1,
           cus_street: req.body.cus_street,
-          cus_city: req.body.city,
+          cus_city: "N/A",
           cus_state: req.body.cus_state,
           cus_postcode: req.body.cus_postcode,
           cus_country: req.body.cus_country,
           cus_phone: req.body.cus_phone,
-          shipping_method: Courier,
+          shipping_method: "Courier",
           ship_name: req.body.cus_name,
           ship_add1: req.body.cus_add1,
           ship_add2: req.body.cus_add1,
@@ -104,9 +105,9 @@ module.exports = function (app) {
           value_c: "ref003_C",
           value_d: "ref004_D",
         };
-
+        console.log(productInfo);
         // Insert order info
-        // const result = await paymentCollection.insertOne(productInfo);
+        const result = await paymentCollection.insertOne(productInfo);
 
         const sslcommer = new SSLCommerzPayment(
           process.env.STORE_ID,
@@ -127,7 +128,7 @@ module.exports = function (app) {
       //<----------- Success, Fail, Cancel And APN API Here ---------->
 
       app.post("/success", async (req, res) => {
-        const order = await OrderCollections.updateOne(
+        const order = await paymentCollection.updateOne(
           { tran_id: req.body.tran_id },
           {
             $set: {
@@ -139,14 +140,14 @@ module.exports = function (app) {
       });
 
       app.post("/failure", async (req, res) => {
-        const order = await OrderCollections.deleteOne({
+        const order = await paymentCollection.deleteOne({
           tran_id: req.body.tran_id,
         });
         res.redirect(`http://localhost:3000/placeOrder`);
       });
 
       app.post("/cancel", async (req, res) => {
-        const order = await OrderCollections.deleteOne({
+        const order = await paymentCollection.deleteOne({
           tran_id: req.body.tran_id,
         });
         res.redirect(`http://localhost:3000/`);
@@ -154,20 +155,22 @@ module.exports = function (app) {
       app.post("/ipn", (req, res) => {
         res.send(req.body);
       });
+
       //<---------- Ger Payment Complete Details -------->
+
       app.get("/orders/:tran_id", async (req, res) => {
         const id = req.params.tran_id;
-        const order = await OrderCollections.findOne({ tran_id: id });
+        const order = await paymentCollection.findOne({ tran_id: id });
         res.json(order);
       });
 
       //<---------- Validate Transaction By User clicking Success Button -------->
       app.post("/validate", async (req, res) => {
-        const order = await OrderCollections.findOne({
+        const order = await paymentCollection.findOne({
           tran_id: req.body.tran_id,
         });
         if (order.val_id === req.body.val_id) {
-          const update = await OrderCollections.updateOne(
+          const update = await paymentCollection.updateOne(
             { tran_id: req.body.tran_id },
             {
               $set: { paymentStatus: "Successful" },
@@ -177,6 +180,12 @@ module.exports = function (app) {
         } else {
           res.send("Payment Not Confirmed, Discarted Order");
         }
+      });
+      //Get All Payment History
+      app.get("/payments", async (req, res) => {
+        const cursor = paymentCollection.find({});
+        const users = await cursor.toArray();
+        res.json(users);
       });
     } finally {
     }
