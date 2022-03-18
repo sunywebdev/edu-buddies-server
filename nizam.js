@@ -277,6 +277,29 @@ module.exports = function (app) {
         const users = await cursor.toArray();
         res.json(users);
       });
+
+      /*-------------------------------------------------------------------------------*\
+  ////////////////////// Filtering Courses By Categories \\\\\\\\\\\\\\\\\\\\\\\\\
+\*-------------------------------------------------------------------------------*/
+
+      // Game Courses
+
+      app.get("/GameDevCourses", async (req, res) => {
+        let query = {};
+        const gameCategory = req.query.particularCategory;
+
+        if (gameCategory) {
+          query = { category: gameCategory };
+        }
+        const cursor = courses.find(query);
+        const gameCourses = await cursor.toArray();
+        res.json(gameCourses);
+        // console.log();
+      });
+
+      /*-------------------------------------------------------------------------------*\
+  ////////////////////// Filtering Courses By Categories \\\\\\\\\\\\\\\\\\\\\\\\\
+\*-------------------------------------------------------------------------------*/
     } finally {
     }
   }
