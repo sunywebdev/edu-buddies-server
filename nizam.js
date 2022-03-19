@@ -283,7 +283,6 @@ module.exports = function (app) {
 \*-------------------------------------------------------------------------------*/
 
       // Game Courses
-
       app.get("/GameDevCourses", async (req, res) => {
         let query = {};
         const gameCategory = req.query.particularCategory;
@@ -294,6 +293,34 @@ module.exports = function (app) {
         const cursor = courses.find(query);
         const gameCourses = await cursor.toArray();
         res.json(gameCourses);
+        // console.log();
+      });
+
+      // Programming Courses
+      app.get("/ProgrammingCourses", async (req, res) => {
+        let query = {};
+        const programCategory = req.query.particularCategory;
+
+        if (programCategory) {
+          query = { category: programCategory };
+        }
+        const cursor = courses.find(query);
+        const programmingCourses = await cursor.toArray();
+        res.json(programmingCourses);
+        // console.log();
+      });
+
+      // Web Courses
+      app.get("/WebDevCourses", async (req, res) => {
+        let query = {};
+        const webCategory = req.query.particularCategory;
+
+        if (webCategory) {
+          query = { category: webCategory };
+        }
+        const cursor = courses.find(query);
+        const webCourses = await cursor.toArray();
+        res.json(webCourses);
         // console.log();
       });
 
