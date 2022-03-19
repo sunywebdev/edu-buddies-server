@@ -277,6 +277,56 @@ module.exports = function (app) {
         const users = await cursor.toArray();
         res.json(users);
       });
+
+      /*-------------------------------------------------------------------------------*\
+  ////////////////////// Filtering Courses By Categories \\\\\\\\\\\\\\\\\\\\\\\\\
+\*-------------------------------------------------------------------------------*/
+
+      // Game Courses
+      app.get("/GameDevCourses", async (req, res) => {
+        let query = {};
+        const gameCategory = req.query.particularCategory;
+
+        if (gameCategory) {
+          query = { category: gameCategory };
+        }
+        const cursor = courses.find(query);
+        const gameCourses = await cursor.toArray();
+        res.json(gameCourses);
+        // console.log();
+      });
+
+      // Programming Courses
+      app.get("/ProgrammingCourses", async (req, res) => {
+        let query = {};
+        const programCategory = req.query.particularCategory;
+
+        if (programCategory) {
+          query = { category: programCategory };
+        }
+        const cursor = courses.find(query);
+        const programmingCourses = await cursor.toArray();
+        res.json(programmingCourses);
+        // console.log();
+      });
+
+      // Web Courses
+      app.get("/WebDevCourses", async (req, res) => {
+        let query = {};
+        const webCategory = req.query.particularCategory;
+
+        if (webCategory) {
+          query = { category: webCategory };
+        }
+        const cursor = courses.find(query);
+        const webCourses = await cursor.toArray();
+        res.json(webCourses);
+        // console.log();
+      });
+
+      /*-------------------------------------------------------------------------------*\
+  ////////////////////// Filtering Courses By Categories \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+\*-------------------------------------------------------------------------------*/
     } finally {
     }
   }
