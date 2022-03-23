@@ -805,7 +805,7 @@ module.exports = function (app) {
 						address: updatedReq.address,
 						about: updatedReq.about,
 						experinece: updatedReq.experinece,
-						skillset: updatedReq.skillset,
+						skills: updatedReq.skills,
 						language: updatedReq.language,
 						type: updatedReq.type,
 						operationDone: updatedReq.operationDone,
