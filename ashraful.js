@@ -29,7 +29,7 @@ module.exports = function (app) {
 			const database = client.db("edubuddies");
 			const courses = database.collection("courses");
 			const userCollection = database.collection("users");
-			const teachersCollection = database.collection("teachers");
+			const instructorCollection = database.collection("instuctor");
 			const blogsCollection = database.collection("blogs");
 			const newsletterCollection = database.collection("newsletter");
 			const promoCollection = database.collection("promo");
@@ -39,7 +39,7 @@ module.exports = function (app) {
 			app.get("/singleTeacher/:id", async (req, res) => {
 				const id = req.params.id;
 				const query = { _id: ObjectId(id) };
-				const TeacherData = await teachersCollection.findOne(query);
+				const TeacherData = await instructorCollection.findOne(query);
 				res.json(TeacherData);
 			});
 
@@ -54,7 +54,7 @@ module.exports = function (app) {
 			// get Best Perfomer from Teacher
 			app.get("/teachersDashboard/bestPerformer", async (req, res) => {
 				const bestPerformer = req.query;
-				const TeacherData = await teachersCollection
+				const TeacherData = await instructorCollection
 					.find({
 						performer: bestPerformer.performer,
 					})
@@ -136,7 +136,8 @@ module.exports = function (app) {
 						},
 					},
 				);
-				res.redirect(`https://edu-buddies.netlify.app/success/${req.body.tran_id}`,
+				res.redirect(
+					`https://edu-buddies.netlify.app/success/${req.body.tran_id}`,
 				);
 			});
 
@@ -144,16 +145,14 @@ module.exports = function (app) {
 				const order = await paymentCollection.deleteOne({
 					tran_id: req.body.tran_id,
 				});
-				res.redirect(`https://edu-buddies.netlify.app/placeOrder`,
-				);
+				res.redirect(`https://edu-buddies.netlify.app/placeOrder`);
 			});
 
 			app.post("/cancel", async (req, res) => {
 				const order = await paymentCollection.deleteOne({
 					tran_id: req.body.tran_id,
 				});
-				res.redirect(`https://edu-buddies.netlify.app/`,
-				);
+				res.redirect(`https://edu-buddies.netlify.app/`);
 			});
 			app.post("/ipn", (req, res) => {
 				res.send(req.body);
