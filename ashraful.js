@@ -136,9 +136,7 @@ module.exports = function (app) {
 						},
 					},
 				);
-				res.redirect(
-					`http://localhost:3000/success/${req.body.tran_id}` ||
-						`https://edu-buddies.netlify.app/success/${req.body.tran_id}`,
+				res.redirect(`https://edu-buddies.netlify.app/success/${req.body.tran_id}`,
 				);
 			});
 
@@ -146,9 +144,7 @@ module.exports = function (app) {
 				const order = await paymentCollection.deleteOne({
 					tran_id: req.body.tran_id,
 				});
-				res.redirect(
-					`http://localhost:3000/placeOrder` ||
-						`https://edu-buddies.netlify.app/placeOrder`,
+				res.redirect(`https://edu-buddies.netlify.app/placeOrder`,
 				);
 			});
 
@@ -156,8 +152,7 @@ module.exports = function (app) {
 				const order = await paymentCollection.deleteOne({
 					tran_id: req.body.tran_id,
 				});
-				res.redirect(
-					`http://localhost:3000/` || `https://edu-buddies.netlify.app/`,
+				res.redirect(`https://edu-buddies.netlify.app/`,
 				);
 			});
 			app.post("/ipn", (req, res) => {
