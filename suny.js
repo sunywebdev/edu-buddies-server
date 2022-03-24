@@ -788,7 +788,7 @@ module.exports = function (app) {
 				console.log("Found one", result);
 			});
 
-			// To update single profile permanent address data
+			// To update single teacher About data
 			app.put("/teacherAbout", async (req, res) => {
 				const user = req.query;
 				const filter = { email: user?.email };
@@ -809,6 +809,10 @@ module.exports = function (app) {
 						language: updatedReq.language,
 						type: updatedReq.type,
 						operationDone: updatedReq.operationDone,
+						facebook: updatedReq.facebook,
+						twitter: updatedReq.twitter,
+						linkedin: updatedReq.linkedin,
+						photoURL: updatedReq.photoURL,
 					},
 				};
 				const result = await instructorCollection.updateOne(
