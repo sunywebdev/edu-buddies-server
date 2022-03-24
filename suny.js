@@ -36,7 +36,6 @@ module.exports = function (app) {
       const database = client.db("edubuddies");
       const courses = database.collection("courses");
       const userCollection = database.collection("users");
-      const teachersCollection = database.collection("teachers");
       const blogsCollection = database.collection("blogs");
       const newsletterCollection = database.collection("newsletter");
       const promoCollection = database.collection("promo");
