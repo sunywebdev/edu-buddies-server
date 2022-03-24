@@ -75,6 +75,7 @@ module.exports = function (app) {
 					fail_url: "https://fierce-caverns-90976.herokuapp.com/failure",
 					cancel_url: "https://fierce-caverns-90976.herokuapp.com/cancel",
 					ipn_url: "https://fierce-caverns-90976.herokuapp.com/ipn",
+					product_id: req.body.product_id,
 					product_name: req.body.product_name,
 					product_category: req.body.product_category,
 					product_profile: req.body.product_profile,
