@@ -58,6 +58,9 @@ module.exports = function (app) {
             role: user.role,
             displayName: user.displayName,
             photoURL: user.photoURL,
+            myCourse: [],
+            skillset: [],
+            language: [],
           },
         };
 

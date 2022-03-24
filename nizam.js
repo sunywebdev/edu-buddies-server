@@ -284,34 +284,53 @@ module.exports = function (app) {
         // change role
         const email = req.params.email;
         const userData = req.body.userData;
-        const courseData = req.body.paymentDetails;
-
+        const courseData = req.body.courseInfo;
         const options = { upsert: true };
-        const updateData = {
-          $set: {
-            email: email,
-            role: "Student",
-            displayName: userData?.displayName,
-            photoURL: userData?.photoURL,
-            myCourse: [courseData],
-            skillset: [],
-            language: [],
-          },
-        };
 
         const filter = { email: email };
         const fiterData = await studentCollection.findOne(filter);
-        console.log(fiterData);
+
         if (fiterData === null) {
+          const updateData = {
+            $set: {
+              email: email,
+              role: "Student",
+              displayName: userData?.displayName,
+              photoURL: userData?.photoURL,
+              myCourse: [courseData],
+              skillset: [],
+              language: [],
+            },
+          };
+
+          await userCollection.updateOne(
+            filter,
+            {
+              $set: {
+                role: "Student",
+              },
+            },
+            options
+          );
           const result = await studentCollection.updateOne(
             filter,
             updateData,
             options
           );
-
           res.json(result);
         } else if (fiterData) {
-          res.json(fiterData);
+          fiterData.myCourse.push(courseData);
+          const updateData = {
+            $set: {
+              myCourse: fiterData.myCourse,
+            },
+          };
+          const result = await studentCollection.updateOne(
+            filter,
+            updateData,
+            options
+          );
+          res.json(result);
         }
 
         //
