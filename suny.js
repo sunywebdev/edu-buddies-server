@@ -51,8 +51,6 @@ module.exports = function (app) {
         const options = { upsert: true };
 
         const user = req.body;
-        console.log("change role", user);
-
         const filter = { email: user.email };
         const updateData = {
           $set: {
@@ -60,9 +58,6 @@ module.exports = function (app) {
             role: user.role,
             displayName: user.displayName,
             photoURL: user.photoURL,
-            myCourse: [],
-            skillset: [],
-            language: [],
           },
         };
 
@@ -77,16 +72,20 @@ module.exports = function (app) {
         // delete from admin databese
         const deleteFromAdmin = async () => {
           const result = await adminCollection.deleteOne(filter);
+          console.log(result);
         };
         // delete from Instrcutor databese
         const deleteFromInstructor = async () => {
           const result = await instructorCollection.deleteOne(filter);
+          console.log(result);
         };
         // delete from Student databese
         const deleteFromStudent = async () => {
           const result = await studentCollection.deleteOne(filter);
+          console.log(result);
         };
 
+        console.log("user", user);
         if (user.role === "Admin") {
           const result = await adminCollection.updateOne(
             filter,
@@ -776,6 +775,53 @@ module.exports = function (app) {
         const result = await userCollection.deleteOne(deleteId);
         res.send(result);
         console.log("user Successfully Deleted", result);
+      });
+
+      //To load single Teacher data
+      app.get("/singleTeacher", async (req, res) => {
+        const user = req.query;
+        console.log("user", user);
+        const result = await instructorCollection.findOne({
+          email: user?.email,
+        });
+        res.send(result);
+        console.log("Found one", result);
+      });
+
+      // To update single teacher About data
+      app.put("/teacherAbout", async (req, res) => {
+        const user = req.query;
+        const filter = { email: user?.email };
+        const updatedReq = req.body;
+        console.log("Comming form UI", updatedReq);
+        const options = { upsert: true };
+        const updateFile = {
+          $set: {
+            displayName: updatedReq.displayName,
+            designation: updatedReq.designation,
+            phone: updatedReq.phone,
+            age: updatedReq.age,
+            gender: updatedReq.gender,
+            address: updatedReq.address,
+            about: updatedReq.about,
+            experinece: updatedReq.experinece,
+            skills: updatedReq.skills,
+            language: updatedReq.language,
+            type: updatedReq.type,
+            operationDone: updatedReq.operationDone,
+            facebook: updatedReq.facebook,
+            twitter: updatedReq.twitter,
+            linkedin: updatedReq.linkedin,
+            photoURL: updatedReq.photoURL,
+          },
+        };
+        const result = await instructorCollection.updateOne(
+          filter,
+          updateFile,
+          options
+        );
+        res.json(result);
+        console.log("Updated Successfully", result);
       });
     } finally {
     }
