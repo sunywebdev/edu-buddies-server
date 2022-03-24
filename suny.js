@@ -51,6 +51,8 @@ module.exports = function (app) {
 				const options = { upsert: true };
 
 				const user = req.body;
+				console.log("change role", user);
+
 				const filter = { email: user.email };
 				const updateData = {
 					$set: {
@@ -58,6 +60,9 @@ module.exports = function (app) {
 						role: user.role,
 						displayName: user.displayName,
 						photoURL: user.photoURL,
+						myCourse: [],
+						skillset: [],
+						language: [],
 					},
 				};
 
@@ -72,20 +77,16 @@ module.exports = function (app) {
 				// delete from admin databese
 				const deleteFromAdmin = async () => {
 					const result = await adminCollection.deleteOne(filter);
-					console.log(result);
 				};
 				// delete from Instrcutor databese
 				const deleteFromInstructor = async () => {
 					const result = await instructorCollection.deleteOne(filter);
-					console.log(result);
 				};
 				// delete from Student databese
 				const deleteFromStudent = async () => {
 					const result = await studentCollection.deleteOne(filter);
-					console.log(result);
 				};
 
-				console.log("user", user);
 				if (user.role === "Admin") {
 					const result = await adminCollection.updateOne(
 						filter,
