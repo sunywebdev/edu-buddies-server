@@ -17,9 +17,16 @@ module.exports = function (app) {
 	require("dotenv").config();
 	const cors = require("cors");
 
-	app.use(cors());
+	app.use(
+		cors({
+			origin: "*",
+		}),
+	);
 	app.use(express.json());
-
+	app.use(function (req, res, next) {
+		res.header("Access-Control-Allow-Origin", "*");
+		next();
+	});
 	const user = process.env.DB_USER;
 	const password = process.env.DB_PASS;
 
