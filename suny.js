@@ -71,6 +71,7 @@ module.exports = function (app) {
 						options,
 					);
 				};
+
 				// delete from admin databese
 				const deleteFromAdmin = async () => {
 					const result = await adminCollection.deleteOne(filter);
