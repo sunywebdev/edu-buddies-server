@@ -393,6 +393,7 @@ module.exports = function (app) {
   ////////////////////// Filtering Courses By Categories \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 \*-------------------------------------------------------------------------------*/
 		} finally {
+			
 		}
 	}
 	run().catch(console.dir);
