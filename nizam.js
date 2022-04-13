@@ -279,7 +279,6 @@ module.exports = function (app) {
 			});
 
 			// add   my courese of Student DB
-
 			app.put("/addMyCourses/:email", logFunc, async (req, res) => {
 				// change role
 				const email = req.params.email;
